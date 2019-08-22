@@ -41,6 +41,8 @@ function Scene({ top, mouse }) {
         lorem
         </Text> */}
       <Thread position={top.interpolate(top => [0, -1 + top / 20, 0])} />
+
+      {/* <Thread position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />       */}
       {/* <Text position={top.interpolate(top => [0, -20 + ((top * 10) / scrollMax) * 2, 0])} color="black" fontSize={150}> */}
       {/* Ipsum */}
       {/* </Text> */}
@@ -160,7 +162,7 @@ function Thread({ position }) {
   const [coords, mat, pos] = useMemo(() => {
     // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
     // const geo = new THREE.BoxBufferGeometry(1, 1, 1);
-    const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('peachpuff'), transparent: true })
+    const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('darkgrey'), transparent: true })
     // const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
     const pos = position;
     // console.log(pos);
@@ -171,14 +173,14 @@ function Thread({ position }) {
     //   new Vector3[1, 2, 0]
     // ]);       
     const threads = threadGen(
-      40,
-      new THREE.Vector3(-5, 5, 0),
-      new THREE.Vector3(5, -150, 0),
-      new THREE.Vector3(20, 20, 0)
+      15,
+      new THREE.Vector3(-5, 10, -20),
+      new THREE.Vector3(5, -150, 20),
+      new THREE.Vector3(20, 10, 5)
     );
 
     const coords = threads.map(thread => {
-      const points = thread.getPoints(50);
+      const points = thread.getPoints(100);
       return new THREE.BufferGeometry().setFromPoints(points);
     })
     // const points = curve.getPoints(50);
@@ -191,8 +193,8 @@ function Thread({ position }) {
 
   return (<a.group ref={group} position={position}>
     {coords.map(geo =>
-      <line geometry={geo}>
-        <lineBasicMaterial attach="material" color="white" />
+      <line geometry={geo} material={mat}>
+        {/* <lineBasicMaterial attach="material" color="blue" /> */}
       </line>
     )}
   </a.group>)
@@ -229,7 +231,7 @@ function threadGen(count, min, max, segments) {
       points.push(new THREE.Vector3(x, segY, z));
 
       if (GetRandomBool()) {
-        if (segIndexX < segments.x) segIndexX+= GetRandom(min.x, max.x);
+        if (segIndexX < segments.x) segIndexX++;
       } else {
         if (segIndexX > 0) segIndexX--;        
       }
