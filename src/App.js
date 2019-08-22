@@ -182,6 +182,11 @@ function Thread({ position }) {
 }
 
 
+//Generate Threads(int count, Vector3 min, Vector3 max, Vector3 segments)
+//Y starts at min and goes to segment count to max
+//Return Threads[ (thread[[x, y, z], [x, y, z], [x, y, z], [x, y, z]])
+//                (thread[[x, y, z], [x, y, z], [x, y, z], [x, y, z]])]
+
 
 
 
