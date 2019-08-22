@@ -150,14 +150,14 @@ function Stars({ position }) {
 function Thread({ position }) {
   let group = useRef();
   let theta = 0
-  useRender(() => {
-    const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
-    const s = Math.cos(THREE.Math.degToRad(theta * 2))
-    group.current.rotation.set(r, r, r)
-    group.current.scale.set(s, s, s)
-  })
+  // useRender(() => {
+  //   const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
+  //   const s = Math.cos(THREE.Math.degToRad(theta * 2))
+  //   group.current.rotation.set(r, r, r)
+  //   group.current.scale.set(s, s, s)
+  // })
 
-  const [geo, mat, pos] = useMemo(() => {
+  const [coords, mat, pos] = useMemo(() => {
     // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
     // const geo = new THREE.BoxBufferGeometry(1, 1, 1);
     const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('peachpuff'), transparent: true })
@@ -169,26 +169,32 @@ function Thread({ position }) {
     //   new Vector3[0, 0, 0], 
     //   new Vector3[1, 1, 0], 
     //   new Vector3[1, 2, 0]
-    // ]);
+    // ]);       
+    const threads = threadGen(
+      40,
+      new THREE.Vector3(-5, 5, 0),
+      new THREE.Vector3(5, -150, 0),
+      new THREE.Vector3(20, 20, 0)
+    );
 
-    var curve = new THREE.CatmullRomCurve3( [
-      new THREE.Vector3( 0, 0, 0 ),
-      new THREE.Vector3( 1, 1, 0 ),
-      new THREE.Vector3( 0, 2, 0 ),
-    ] );
+    const coords = threads.map(thread => {
+      const points = thread.getPoints(50);
+      return new THREE.BufferGeometry().setFromPoints(points);
+    })
+    // const points = curve.getPoints(50);
+    // const geo = new THREE.BufferGeometry().setFromPoints(points);
 
-    const points = curve.getPoints( 50 );
-    const geo = new THREE.BufferGeometry().setFromPoints( points );
 
-    return [geo, mat, pos]
+
+    return [coords, mat, pos]
   }, [])
 
-  const vertices = threadGen(1, 0, 100, 30);
   return (<a.group ref={group} position={position}>
-    <line geometry={geo}>
-      
-      <lineBasicMaterial attach="material" color="white" />
-    </line>
+    {coords.map(geo =>
+      <line geometry={geo}>
+        <lineBasicMaterial attach="material" color="white" />
+      </line>
+    )}
   </a.group>)
 }
 
@@ -199,29 +205,57 @@ function Thread({ position }) {
 //                (thread[[x, y, z], [x, y, z], [x, y, z], [x, y, z]])]
 
 
-    function threadGen(count, min, max, segments){
-        let threads = [[0,0,0]];
-        let point = [];
-        let moveZ = 0;
-        let x = 0;
-        let y = 0;
-        let z = 0;
-        for(let i = 0; i < segments; i ++){
-            point = [];
-            x +=  Math.floor(Math.random() * (1 - (-1)));
-            y +=  Math.floor(Math.random() * (2 - (0)));
-            moveZ = Math.floor(Math.random() * Math.floor(10));
-            point.push(x);
-            point.push(y * -1);
-            if(moveZ <= 3){
-                z +=  Math.floor(Math.random() * (1 - (-1)));
-            }
-            point.push(z);
-            threads.push(point);
-        }
-        console.log(threads);
-        return threads;
+function threadGen(count, min, max, segments) {
+  let threads = []
+
+  for (let i = 0; i < count; i++) {
+    let points = [];
+    let moveZ = 0;
+    let x = 0;
+    let z = 0;
+
+    let segmentStep = new THREE.Vector3(
+      (max.x - min.x) / segments.x,
+      (max.y - min.y) / segments.y,
+      (max.z - min.z) / segments.z,
+    )
+    console.log(segmentStep);
+    let segIndexX = GetRandom(0, segments.x);
+    let segIndexZ = GetRandom(0, segments.z);
+    // debugger;
+    for (let segY = min.y; segY >= max.y; segY += segmentStep.y) {
+      x = min.x + segIndexX * segmentStep.x;
+      z = min.z + segIndexZ * segmentStep.z;
+      points.push(new THREE.Vector3(x, segY, z));
+
+      if (GetRandomBool()) {
+        if (segIndexX < segments.x) segIndexX+= GetRandom(min.x, max.x);
+      } else {
+        if (segIndexX > 0) segIndexX--;        
+      }
+
+
+      if (GetRandomBool()) {
+        if (segIndexZ < segments.z) segIndexZ++;
+      } else {
+        if (segIndexZ > 0) segIndexZ--;
+      }
+
     }
+    console.log(points);
+
+    threads.push(new THREE.CatmullRomCurve3(points));
+  }
+  return threads;
+}
+
+function GetRandom(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function GetRandomBool() {
+  return Math.floor(Math.random() + 0.5) > 0;
+}
 
 
 // /** This component creates a glitch effect */
