@@ -159,23 +159,37 @@ function Thread({ position }) {
 
   const [geo, mat, pos] = useMemo(() => {
     // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
-    const geo = new THREE.BoxBufferGeometry(1, 1, 1);
+    // const geo = new THREE.BoxBufferGeometry(1, 1, 1);
     const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('peachpuff'), transparent: true })
     // const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
     const pos = position;
     // console.log(pos);
 
+    // const curve = THREE.CatmullRomCurve3([
+    //   new Vector3[0, 0, 0], 
+    //   new Vector3[1, 1, 0], 
+    //   new Vector3[1, 2, 0]
+    // ]);
+
+    var curve = new THREE.CatmullRomCurve3( [
+      new THREE.Vector3( 0, 0, 0 ),
+      new THREE.Vector3( 1, 1, 0 ),
+      new THREE.Vector3( 0, 2, 0 ),
+    ] );
+
+    const points = curve.getPoints( 50 );
+    const geo = new THREE.BufferGeometry().setFromPoints( points );
+
     return [geo, mat, pos]
   }, [])
 
-  const vertices = [[0, 0, 0], [1, 1, 0], [1, 2, 0]];
+    
+  
+
+
   return (<a.group ref={group} position={position}>
-    <line >
-      <geometry
-        attach="geometry"
-        vertices={vertices.map(v => new THREE.Vector3(...v))}
-        onUpdate={self => (self.verticesNeedUpdate = true)}
-      />
+    <line geometry={geo}>
+      
       <lineBasicMaterial attach="material" color="white" />
     </line>
   </a.group>)
