@@ -36,7 +36,7 @@ function Scene({ top, mouse }) {
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
       {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
-      {/* <Images top={top} mouse={mouse} scrollMax={scrollMax} /> */}
+      <Images top={top} mouse={mouse} scrollMax={scrollMax} />
       {/* <Text opacity={top.interpolate([0, 200], [1, 0])} position={top.interpolate(top => [0, -1 + top / 200, 0])}>
         lorem
         </Text> */}
@@ -276,7 +276,9 @@ function GetRandomBool() {
 // })
 
 // /** This component creates a bunch of parallaxed images */
-function Images({ top, mouse, scrollMax }) {
+function Images({ top, mouse, scrollMax }) {  
+  console.log(data);
+  
   return data.map(([url, x, y, factor, z, scale], index) => (
     <Image
       key={index}
