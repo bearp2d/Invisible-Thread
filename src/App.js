@@ -150,12 +150,12 @@ function Stars({ position }) {
 function Thread({ position }) {
   let group = useRef();
   let theta = 0
-  // useRender(() => {
-  //   const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
-  //   const s = Math.cos(THREE.Math.degToRad(theta * 2))
-  //   group.current.rotation.set(r, r, r)
-  //   group.current.scale.set(s, s, s)
-  // })
+  useRender(() => {
+    const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
+    const s = Math.cos(THREE.Math.degToRad(theta * 2))
+    group.current.rotation.set(r, r, r)
+    group.current.scale.set(s, s, s)
+  })
 
   const [geo, mat, pos] = useMemo(() => {
     // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
@@ -168,7 +168,7 @@ function Thread({ position }) {
     return [geo, mat, pos]
   }, [])
 
-  const vertices = [[0, 0, 0], [1, 1, 0], [1, 2, 0]];
+  const vertices = threadGen(1, 0, 100, 30);
   return (<a.group ref={group} position={position}>
     <line >
       <geometry
@@ -188,6 +188,29 @@ function Thread({ position }) {
 //                (thread[[x, y, z], [x, y, z], [x, y, z], [x, y, z]])]
 
 
+    function threadGen(count, min, max, segments){
+        let threads = [[0,0,0]];
+        let point = [];
+        let moveZ = 0;
+        let x = 0;
+        let y = 0;
+        let z = 0;
+        for(let i = 0; i < segments; i ++){
+            point = [];
+            x +=  Math.floor(Math.random() * (1 - (-1)));
+            y +=  Math.floor(Math.random() * (2 - (0)));
+            moveZ = Math.floor(Math.random() * Math.floor(10));
+            point.push(x);
+            point.push(y * -1);
+            if(moveZ <= 3){
+                z +=  Math.floor(Math.random() * (1 - (-1)));
+            }
+            point.push(z);
+            threads.push(point);
+        }
+        console.log(threads);
+        return threads;
+    }
 
 
 // /** This component creates a glitch effect */
