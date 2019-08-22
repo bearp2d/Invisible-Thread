@@ -12,9 +12,9 @@ function App() {
   const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
 
   return (
-    <>      
-      <Canvas className="canvas">        
-        <Scene top={top} mouse={mouse} />        
+    <>
+      <Canvas className="canvas">
+        <Scene top={top} mouse={mouse} />
       </Canvas>
       <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>
         <div style={{ height: '525vh' }} />
@@ -28,24 +28,25 @@ export default App;
 
 
 function Scene({ top, mouse }) {
-    const { size } = useThree()
-    const scrollMax = size.height * 4.5
-    return (
-      <>
-        <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
-        {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
-        <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} />
-        {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
-        <Images top={top} mouse={mouse} scrollMax={scrollMax} />
-        <Text opacity={top.interpolate([0, 200], [1, 0])} position={top.interpolate(top => [0, -1 + top / 200, 0])}>
-          lorem
-        </Text>
-        {/* <Text position={top.interpolate(top => [0, -20 + ((top * 10) / scrollMax) * 2, 0])} color="black" fontSize={150}> */}
-          {/* Ipsum */}
-        {/* </Text> */}
-      </>
-    )
-  }
+  const { size } = useThree()
+  const scrollMax = size.height * 4.5
+  return (
+    <>
+      <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
+      {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
+      {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
+      {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
+      {/* <Images top={top} mouse={mouse} scrollMax={scrollMax} /> */}
+      {/* <Text opacity={top.interpolate([0, 200], [1, 0])} position={top.interpolate(top => [0, -1 + top / 200, 0])}>
+        lorem
+        </Text> */}
+      <Thread position={top.interpolate(top => [0, -1 + top / 20, 0])} />
+      {/* <Text position={top.interpolate(top => [0, -20 + ((top * 10) / scrollMax) * 2, 0])} color="black" fontSize={150}> */}
+      {/* Ipsum */}
+      {/* </Text> */}
+    </>
+  )
+}
 
 
 
@@ -144,6 +145,45 @@ function Stars({ position }) {
     </a.group>
   )
 }
+
+
+function Thread({ position }) {
+  let group = useRef();
+  let theta = 0
+  // useRender(() => {
+  //   const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
+  //   const s = Math.cos(THREE.Math.degToRad(theta * 2))
+  //   group.current.rotation.set(r, r, r)
+  //   group.current.scale.set(s, s, s)
+  // })
+
+  const [geo, mat, pos] = useMemo(() => {
+    // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
+    const geo = new THREE.BoxBufferGeometry(1, 1, 1);
+    const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('peachpuff'), transparent: true })
+    // const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
+    const pos = position;
+    // console.log(pos);
+
+    return [geo, mat, pos]
+  }, [])
+
+  const vertices = [[0, 0, 0], [1, 1, 0], [1, 2, 0]];
+  return (<a.group ref={group} position={position}>
+    <line >
+      <geometry
+        attach="geometry"
+        vertices={vertices.map(v => new THREE.Vector3(...v))}
+        onUpdate={self => (self.verticesNeedUpdate = true)}
+      />
+      <lineBasicMaterial attach="material" color="white" />
+    </line>
+  </a.group>)
+}
+
+
+
+
 
 // /** This component creates a glitch effect */
 // const Effects = React.memo(({ factor }) => {
