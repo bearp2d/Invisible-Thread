@@ -5,17 +5,23 @@ import { apply as applySpring, useSpring, a, interpolate } from 'react-spring/th
 import './styles.css'
 import data from './data'
 
+import { EffectComposer } from './postprocessing/EffectComposer'
+import { RenderPass } from './postprocessing/RenderPass'
+import { GlitchPass } from './postprocessing/GlitchPass'
+applySpring({ EffectComposer, RenderPass, GlitchPass })
+applyThree({ EffectComposer, RenderPass, GlitchPass })
+
+
 function App() {
   const [{ top, mouse }, set] = useSpring(() => ({ top: 0, mouse: [0, 0] }));
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
   const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
-  // const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000)
-  // const cam = new THREE.OrthographicCamera(0, 0, 0, 0, 0.1, 1000)
+  const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000)
+  // const cam = new THREE.OrthographicCamera(-1, 1, -1, 1, 0.1, 100)
   // cam.position.z = 5
 
   return (
-    <>
-      {/* <Canvas className="canvas" camera={cam}> */}
+    <>      
       <Canvas className="canvas">
         <Scene top={top} mouse={mouse} />
       </Canvas>
@@ -39,11 +45,12 @@ function Scene({ top, mouse }) {
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
       {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
-      <Images top={top} mouse={mouse} scrollMax={scrollMax} />
       {/* <Text opacity={top.interpolate([0, 200], [1, 0])} position={top.interpolate(top => [0, -1 + top / 200, 0])}>
         lorem
-        </Text> */}
+      </Text> */}
       <Thread top={top} mouse={mouse} scrollMax={scrollMax} />
+      
+      <Images top={top} mouse={mouse} scrollMax={scrollMax} />
       {/* <Thread top={top} mouse={mouse} position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
 
       {/* <Thread position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />       */}
@@ -182,8 +189,8 @@ function Thread({ top, mouse, scrollMax }) {
     //   new Vector3[1, 2, 0]
     // ]);       
     const threads = threadGen(
-      1,
-      new THREE.Vector3(-7, 10, -7),
+      10,
+      new THREE.Vector3(-7, 4, -7),
       new THREE.Vector3(7, -150, 7),
       new THREE.Vector3(20, 10, 5)
     );
@@ -212,8 +219,8 @@ function Thread({ top, mouse, scrollMax }) {
       (mouse[1] * factor) / 50000 + y * 1.15 + ((top * factor) / scrollMax) * 2,
       z + top / 2000
     ])}>
-    {coords.map(geo =>
-      <line geometry={geo} material={mat}>
+    {coords.map((geo, i) =>
+      <line geometry={geo} material={mat} key={"thread" + i}>
         {/* <lineBasicMaterial attach="material" color="blue" /> */}
       </line>
     )}
@@ -267,19 +274,19 @@ function GetRandomBool() {
 
 
 // /** This component creates a glitch effect */
-// const Effects = React.memo(({ factor }) => {
-//   const { gl, scene, camera, size } = useThree()
-//   const composer = useRef()
-//   useEffect(() => void composer.current.setSize(size.width, size.height), [size])
-//   // This takes over as the main render-loop (when 2nd arg is set to true)
-//   useRender(() => composer.current.render(), true)
-//   return (
-//     <effectComposer ref={composer} args={[gl]}>
-//       <renderPass attachArray="passes" args={[scene, camera]} />
-//       <a.glitchPass attachArray="passes" renderToScreen factor={factor} />
-//     </effectComposer>
-//   )
-// })
+const Effects = React.memo(({ factor }) => {
+  const { gl, scene, camera, size } = useThree()
+  const composer = useRef()
+  useEffect(() => void composer.current.setSize(size.width, size.height), [size])
+  // This takes over as the main render-loop (when 2nd arg is set to true)
+  useRender(() => composer.current.render(), true)
+  return (
+    <effectComposer ref={composer} args={[gl]}>
+      <renderPass attachArray="passes" args={[scene, camera]} />
+      <a.glitchPass attachArray="passes" renderToScreen factor={factor} />
+    </effectComposer>
+  )
+})
 
 // /** This component creates a bunch of parallaxed images */
 function Images({ top, mouse, scrollMax }) {
