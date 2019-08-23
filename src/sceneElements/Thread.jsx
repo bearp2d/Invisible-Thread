@@ -55,9 +55,9 @@ export default function Thread({ top, mouse, scrollMax }) {
         z + top / 2000
       ])}>
       {coords.map((geo, i) =>
-        <line geometry={geo} material={mat} key={"thread" + i}>
+        <ne geometry={geo} material={mat} key={"thread" + i}>
           {/* <lineBasicMaterial attach="material" color="blue" /> */}
-        </line>
+        </ne>
       )}
     </a.group>)
   }

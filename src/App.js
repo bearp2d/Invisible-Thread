@@ -18,10 +18,9 @@ import { EffectComposer } from './postprocessing/EffectComposer'
 import { RenderPass } from './postprocessing/RenderPass'
 import { GlitchPass } from './postprocessing/GlitchPass'
 import { WaterPass } from './postprocessing/WaterPass'
-import { UnrealBloomPass } from './postprocessing/BloomPass'
 
-applySpring({ EffectComposer, RenderPass, GlitchPass, WaterPass, UnrealBloomPass })
-applyThree({ EffectComposer, RenderPass, GlitchPass, WaterPass, UnrealBloomPass })
+applySpring({ EffectComposer, RenderPass, GlitchPass, WaterPass})
+applyThree({ EffectComposer, RenderPass, GlitchPass, WaterPass})
 
 
 function App() {
@@ -34,21 +33,21 @@ function App() {
 
   return (
     <>
-      <Canvas className="canvas">
+      <Canvas className="canvas">        
         <Scene top={top} mouse={mouse} />
       </Canvas>
 
       <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>
-        <Logo logo={logo} top={top} />        
+        <logo logo={logo} top={top} />
         <div style={{ height: '525vh' }} />
         {/* <Banner /> */}
-        <video id="video1" loop crossOrigin="anonymous" webkit-playsinline style={{display: 'none'}}>
+        <video id="video1" loop crossOrigin="anonymous" style={{display: 'none'}}>
           <source src={heart} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
         </video>
-        <video id="video2" loop crossOrigin="anonymous" webkit-playsinline style={{display: 'none'}}>
+        <video id="video2" loop crossOrigin="anonymous" style={{display: 'none'}}>
           <source src={video1} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
         </video>
-        <video id="video3" loop crossOrigin="anonymous" webkit-playsinline style={{display: 'none'}}>
+        <video id="video3" loop crossOrigin="anonymous" style={{display: 'none'}}>
           <source src={video2} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
         </video>
       </div>
@@ -60,7 +59,10 @@ export default App;
 
 
 function Logo ({top, logo}) {
-  return <img src={logo} className="logo" style={{top: top.value, position: "absolute"}} />
+  // useRender(() => {    
+  // })
+  
+  return <img src={logo} className="logo" style={{top: top.interpolate([0, 500], [1, 100]), position: "absolute"}} />
 }
 
 
