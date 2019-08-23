@@ -10,7 +10,7 @@ export default function Thread({ top, mouse, scrollMax }) {
       // const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
       // const s = Math.cos(THREE.Math.degToRad(theta * 2))
       // theta += 0.0001;
-      theta += 0.001;
+      // theta += 0.001;
       group.current.rotation.set(0, theta, 0)
       // group.current.scale.set(s, s, s)
     })
@@ -19,6 +19,7 @@ export default function Thread({ top, mouse, scrollMax }) {
       // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
       // const geo = new THREE.BoxBufferGeometry(1, 1, 1);
       const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('darkgrey'), transparent: true })
+      // const mat = new THREE.VideoTexture({baseURI: `https://vimeo.com/65475425`})
       // const mat = new THREE.LineDashedMaterial({ color: new THREE.Color('white') })
   
       // const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
@@ -27,8 +28,8 @@ export default function Thread({ top, mouse, scrollMax }) {
       
       const threads = threadGen(
         10,
-        new THREE.Vector3(-7, 4, -7),
-        new THREE.Vector3(7, -150, 7),
+        new THREE.Vector3(-7, 10, -7),
+        new THREE.Vector3(7, -150, 2),
         new THREE.Vector3(20, 10, 5)
       );
   
@@ -36,7 +37,8 @@ export default function Thread({ top, mouse, scrollMax }) {
         const points = thread.getPoints(50);
         return new THREE.BufferGeometry().setFromPoints(points);
       })
-  
+      console.log(coords);
+      
       return [coords, mat, pos]
     }, [])
   
