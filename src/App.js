@@ -8,8 +8,8 @@ import Text from './sceneElements/Text'
 import Thread from './sceneElements/Thread'
 import Stars from './sceneElements/Stars'
 import heart from './images/heart.mp4'
-import video1 from './images/video1.mp4'
-import video2 from './images/video2.mp4'
+import video1 from './images/small/video1.mp4'
+import video2 from './images/small/video2.mp4'
 import logo from './images/thisSVG.svg'
 
 // Import and register postprocessing classes as three-native-elements for both react-three-fiber & react-spring
@@ -38,7 +38,7 @@ function App() {
       </Canvas>
 
       <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>
-        <logo logo={logo} top={top} />
+        {/* <Logo logo={logo} top={top} /> */}
         <div style={{ height: '525vh' }} />
         {/* <Banner /> */}
         <video id="video1" loop crossOrigin="anonymous" style={{display: 'none'}}>
