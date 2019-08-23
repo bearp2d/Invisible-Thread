@@ -3,8 +3,14 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { apply as applyThree, Canvas, useRender, useThree } from 'react-three-fiber'
 import { apply as applySpring, useSpring, a, interpolate } from 'react-spring/three'
 import './styles.css'
-import data from './data'
+import { Images, Image} from './sceneElements/Images'
+import Text from './sceneElements/Text'
+import Thread from './sceneElements/Thread'
+import Stars from './sceneElements/Stars'
 
+
+// Import and register postprocessing classes as three-native-elements for both react-three-fiber & react-spring
+// They'll be available as native elements <effectComposer /> from then on ...
 import { EffectComposer } from './postprocessing/EffectComposer'
 import { RenderPass } from './postprocessing/RenderPass'
 import { GlitchPass } from './postprocessing/GlitchPass'
@@ -34,22 +40,20 @@ function App() {
 
 export default App;
 
-
-
 function Scene({ top, mouse }) {
   const { size } = useThree()
   const scrollMax = size.height * 4.5
   return (
     <>
       <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
-      {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
-      {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
-      {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
-      {/* <Text opacity={top.interpolate([0, 200], [1, 0])} position={top.interpolate(top => [0, -1 + top / 200, 0])}>
+      <Effects factor={top.interpolate([0, 150], [1, 0])} />
+      <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} />
+      <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} />
+      <Text opacity={top.interpolate([0, 200], [1, 0])} position={top.interpolate(top => [0, -1 + top / 200, 0])}>
         lorem
-      </Text> */}
+      </Text>
       <Thread top={top} mouse={mouse} scrollMax={scrollMax} />
-      
+
       <Images top={top} mouse={mouse} scrollMax={scrollMax} />
       {/* <Thread top={top} mouse={mouse} position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
 
@@ -61,65 +65,23 @@ function Scene({ top, mouse }) {
   )
 }
 
-
-
-
-// Import and register postprocessing classes as three-native-elements for both react-three-fiber & react-spring
-// They'll be available as native elements <effectComposer /> from then on ...
-
-// import { EffectComposer } from './postprocessing/EffectComposer'
-// import { RenderPass } from './postprocessing/RenderPass'
-// import { GlitchPass } from './postprocessing/GlitchPass'
-
-// applySpring({ EffectComposer, RenderPass, GlitchPass })
-// applyThree({ EffectComposer, RenderPass, GlitchPass })
-
-/** This component loads an image and projects it onto a plane */
-function Image({ url, opacity, scale, ...props }) {
-  const texture = useMemo(() => new THREE.TextureLoader().load(url), [url])
-  const [hovered, setHover] = useState(false)
-  const hover = useCallback(() => setHover(true), [])
-  const unhover = useCallback(() => setHover(false), [])
-  const { factor } = useSpring({ factor: hovered ? 1.1 : 1 })
+// /** This component creates a glitch effect */
+const Effects = React.memo(({ factor }) => {
+  const { gl, scene, camera, size } = useThree()
+  const composer = useRef()
+  
+  useEffect(() => void composer.current.setSize(size.width, size.height), [size])
+  // This takes over as the main render-loop (when 2nd arg is set to true)
+  useRender(() => composer.current.render(), true)
   return (
-    <a.mesh {...props} onHover={hover} onUnhover={unhover} scale={factor.interpolate(f => [scale * f, scale * f, 1])}>
-      <planeBufferGeometry attach="geometry" args={[5, 5]} />
-      <a.meshLambertMaterial attach="material" transparent opacity={opacity}>
-        <primitive attach="map" object={texture} />
-      </a.meshLambertMaterial>
-    </a.mesh>
+    <effectComposer ref={composer} args={[gl]}>
+      {/* Main Pass that renders the Scene */}
+      <renderPass attachArray="passes" args={[scene, camera]} />
+      {/* Effect Passes renderToScreen draws current pass to screen*/}
+      <a.glitchPass attachArray="passes" renderToScreen factor={factor} />
+    </effectComposer>
   )
-}
-
-// /** This renders text via canvas and projects it as a sprite */
-function Text({ children, position, opacity, color = 'white', fontSize = 410 }) {
-  const {
-    size: { width, height },
-    viewport: { width: viewportWidth, height: viewportHeight }
-  } = useThree()
-  const scale = viewportWidth > viewportHeight ? viewportWidth : viewportHeight
-  const canvas = useMemo(
-    () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = canvas.height = 2048
-      const context = canvas.getContext('2d')
-      context.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif`
-      context.textAlign = 'center'
-      context.textBaseline = 'middle'
-      context.fillStyle = color
-      context.fillText(children, 1024, 1024 - 410 / 2)
-      return canvas
-    },
-    [children, width, height]
-  )
-  return (
-    <a.sprite scale={[scale, scale, 1]} position={position}>
-      <a.spriteMaterial attach="material" transparent opacity={opacity}>
-        <canvasTexture attach="map" image={canvas} premultiplyAlpha onUpdate={s => (s.needsUpdate = true)} />
-      </a.spriteMaterial>
-    </a.sprite>
-  )
-}
+})
 
 // /** This component creates a fullscreen colored plane */
 function Background({ color }) {
@@ -131,215 +93,3 @@ function Background({ color }) {
     </mesh>
   )
 }
-
-// /** This component rotates a bunch of stars */
-function Stars({ position }) {
-  let group = useRef()
-  let theta = 0
-  useRender(() => {
-    const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
-    const s = Math.cos(THREE.Math.degToRad(theta * 2))
-    group.current.rotation.set(r, r, r)
-    group.current.scale.set(s, s, s)
-  })
-  const [geo, mat, coords] = useMemo(() => {
-    // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
-    const geo = new THREE.BoxBufferGeometry(1, 5, 1);
-
-    const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0xdcdee3), transparent: true })
-    const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
-    return [geo, mat, coords]
-  }, [])
-  return (
-    <a.group ref={group} position={position}>
-      {coords.map(([p1, p2, p3], i) => (
-        <mesh key={i} geometry={geo} material={mat} position={[p1, p2, p3]} />
-      ))}
-    </a.group>
-  )
-}
-
-
-function Thread({ top, mouse, scrollMax }) {
-  let group = useRef();
-  let theta = 0
-  useRender(() => {
-    // const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
-    // const s = Math.cos(THREE.Math.degToRad(theta * 2))
-    // theta += 0.0001;
-    theta += 0.001;
-    group.current.rotation.set(0, theta, 0)
-    // group.current.scale.set(s, s, s)
-  })
-
-  const [coords, mat, pos] = useMemo(() => {
-    // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
-    // const geo = new THREE.BoxBufferGeometry(1, 1, 1);
-    // const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('darkgrey'), transparent: true })
-    const mat = new THREE.LineDashedMaterial({ color: new THREE.Color('white') })
-
-    // const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
-    // const pos = position;
-    const pos = 0;
-    // console.log(pos);
-
-    // const curve = THREE.CatmullRomCurve3([
-    //   new Vector3[0, 0, 0], 
-    //   new Vector3[1, 1, 0], 
-    //   new Vector3[1, 2, 0]
-    // ]);       
-    const threads = threadGen(
-      10,
-      new THREE.Vector3(-7, 4, -7),
-      new THREE.Vector3(7, -150, 7),
-      new THREE.Vector3(20, 10, 5)
-    );
-
-    const coords = threads.map(thread => {
-      const points = thread.getPoints(50);
-      return new THREE.BufferGeometry().setFromPoints(points);
-    })
-    // const points = curve.getPoints(50);
-    // const geo = new THREE.BufferGeometry().setFromPoints(points);
-
-
-
-    return [coords, mat, pos]
-  }, [])
-
-  const factor = 5.0;
-  const x = 0;
-  const y = 0;
-  const z = 0;
-
-  return (<a.group ref={group}
-
-    position={interpolate([top, mouse], (top, mouse) => [
-      (-mouse[0] * factor) / 50000 + x,
-      (mouse[1] * factor) / 50000 + y * 1.15 + ((top * factor) / scrollMax) * 2,
-      z + top / 2000
-    ])}>
-    {coords.map((geo, i) =>
-      <line geometry={geo} material={mat} key={"thread" + i}>
-        {/* <lineBasicMaterial attach="material" color="blue" /> */}
-      </line>
-    )}
-  </a.group>)
-}
-
-
-//Generate Threads(int count, Vector3 min, Vector3 max, Vector3 segments)
-//Y starts at min and goes to segment count to max
-//Return Threads[ (thread[[x, y, z], [x, y, z], [x, y, z], [x, y, z]])
-//                (thread[[x, y, z], [x, y, z], [x, y, z], [x, y, z]])]
-
-
-function threadGen(count, min, max, segments) {
-  let threads = []
-
-  for (let i = 0; i < count; i++) {
-    let points = [];
-    let x = 0;
-    let z = 0;
-
-    let segmentStep = new THREE.Vector3(
-      (max.x - min.x) / segments.x,
-      (max.y - min.y) / segments.y,
-      (max.z - min.z) / segments.z,
-    )
-    // let segIndexX = GetRandom(0, segments.x);
-    // let segIndexZ = GetRandom(0, segments.z);
-    for (let segY = min.y; segY >= max.y; segY += segmentStep.y) {
-
-      // x = min.x + segIndexX * segmentStep.x;
-      // z = min.z + segIndexZ * segmentStep.z;
-
-      x = GetRandom(min.x, max.x);
-      z = GetRandom(min.z, max.z);
-
-      points.push(new THREE.Vector3(x, segY, z));
-    }    
-    threads.push(new THREE.CatmullRomCurve3(points));
-  }
-  return threads;
-}
-
-function GetRandom(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function GetRandomBool() {
-  return Math.floor(Math.random() + 0.5) > 0;
-}
-
-
-// /** This component creates a glitch effect */
-const Effects = React.memo(({ factor }) => {
-  const { gl, scene, camera, size } = useThree()
-  const composer = useRef()
-  useEffect(() => void composer.current.setSize(size.width, size.height), [size])
-  // This takes over as the main render-loop (when 2nd arg is set to true)
-  useRender(() => composer.current.render(), true)
-  return (
-    <effectComposer ref={composer} args={[gl]}>
-      <renderPass attachArray="passes" args={[scene, camera]} />
-      <a.glitchPass attachArray="passes" renderToScreen factor={factor} />
-    </effectComposer>
-  )
-})
-
-// /** This component creates a bunch of parallaxed images */
-function Images({ top, mouse, scrollMax }) {
-  return data.map(([url, x, y, factor, z, scale], index) => (
-    <Image
-      key={index}
-      url={url}
-      scale={scale}
-      opacity={top.interpolate([0, 500], [0, 1])}
-      position={interpolate([top, mouse], (top, mouse) => [
-        (-mouse[0] * factor) / 50000 + x,
-        (mouse[1] * factor) / 50000 + y * 1.15 + ((top * factor) / scrollMax) * 2,
-        z + top / 2000
-      ])}
-    />
-  ))
-}
-
-// /** This component maintains the scene */
-// function Scene({ top, mouse }) {
-//   const { size } = useThree()
-//   const scrollMax = size.height * 4.5
-//   return (
-//     <>
-//       <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
-//       <Effects factor={top.interpolate([0, 150], [1, 0])} />
-//       <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} />
-//       <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} />
-//       <Images top={top} mouse={mouse} scrollMax={scrollMax} />
-//       <Text opacity={top.interpolate([0, 200], [1, 0])} position={top.interpolate(top => [0, -1 + top / 200, 0])}>
-//         lorem
-//       </Text>
-//       <Text position={top.interpolate(top => [0, -20 + ((top * 10) / scrollMax) * 2, 0])} color="black" fontSize={150}>
-//         Ipsum
-//       </Text>
-//     </>
-//   )
-// }
-
-// /** Main component */
-// function Main() {
-//   // This tiny spring right here controlls all(!) the animations, one for scroll, the other for mouse movement ...
-//   const [{ top, mouse }, set] = useSpring(() => ({ top: 0, mouse: [0, 0] }))
-//   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), [])
-//   const onScroll = useCallback(e => set({ top: e.target.scrollTop }), [])
-//   return (
-//     <>
-//       <Canvas className="canvas">
-//         <Scene top={top} mouse={mouse} />
-//       </Canvas>
-//       <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>
-//         <div style={{ height: '525vh' }} />
-//       </div>
-//     </>
-//   )
-// }

@@ -1,3 +1,6 @@
+//Default Pass Container
+//It will act as the template for all other render passes
+
 var Pass = function() {
     // if set to true, the pass is processed by the composer
     this.enabled = true
