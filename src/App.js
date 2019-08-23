@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom'
 import * as THREE from 'three/src/Three'
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { apply as applyThree, Canvas, useRender, useThree } from 'react-three-fiber'
@@ -36,7 +35,7 @@ function Scene({ top, mouse }) {
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
       {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
-      <Images top={top} mouse={mouse} scrollMax={scrollMax} />
+      {/* <Images top={top} mouse={mouse} scrollMax={scrollMax} /> */}
       {/* <Text opacity={top.interpolate([0, 200], [1, 0])} position={top.interpolate(top => [0, -1 + top / 200, 0])}>
         lorem
         </Text> */}
@@ -165,7 +164,7 @@ function Thread({ top, mouse, scrollMax }) {
     // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
     // const geo = new THREE.BoxBufferGeometry(1, 1, 1);
     // const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('darkgrey'), transparent: true })
-    const mat = new THREE.LineDashedMaterial({ color: new THREE.Color('blue')})
+    const mat = new THREE.LineDashedMaterial({ color: new THREE.Color('white')})
 
     // const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
     // const pos = position;
@@ -180,7 +179,7 @@ function Thread({ top, mouse, scrollMax }) {
     const threads = threadGen(
       10,
       new THREE.Vector3(-2, 10, -2),
-      new THREE.Vector3(2, -150, 2),
+      new THREE.Vector3(2, -150, 7),
       new THREE.Vector3(20, 10, 5)
     );
 
@@ -235,11 +234,9 @@ function threadGen(count, min, max, segments) {
       (max.x - min.x) / segments.x,
       (max.y - min.y) / segments.y,
       (max.z - min.z) / segments.z,
-    )
-    console.log(segmentStep);
-    let segIndexX = GetRandom(0, segments.x);
-    let segIndexZ = GetRandom(0, segments.z);
-    // debugger;
+    )    
+    // let segIndexX = GetRandom(0, segments.x);
+    // let segIndexZ = GetRandom(0, segments.z);    
     for (let segY = min.y; segY >= max.y; segY += segmentStep.y) {
       
       
