@@ -32,7 +32,7 @@ function Scene({ top, mouse }) {
   const scrollMax = size.height * 4.5
   return (
     <>
-      <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
+      <a.spotLight intensity={10.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
       {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
@@ -40,7 +40,8 @@ function Scene({ top, mouse }) {
       {/* <Text opacity={top.interpolate([0, 200], [1, 0])} position={top.interpolate(top => [0, -1 + top / 200, 0])}>
         lorem
         </Text> */}
-      <Thread position={top.interpolate(top => [0, -1 + top / 20, 0])} />
+      <Thread top={top} mouse={mouse} scrollMax={scrollMax}/>
+      {/* <Thread top={top} mouse={mouse} position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
 
       {/* <Thread position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />       */}
       {/* <Text position={top.interpolate(top => [0, -20 + ((top * 10) / scrollMax) * 2, 0])} color="black" fontSize={150}> */}
@@ -149,22 +150,26 @@ function Stars({ position }) {
 }
 
 
-function Thread({ position }) {
+function Thread({ top, mouse, scrollMax }) {
   let group = useRef();
   let theta = 0
   // useRender(() => {
-  //   const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
-  //   const s = Math.cos(THREE.Math.degToRad(theta * 2))
-  //   group.current.rotation.set(r, r, r)
-  //   group.current.scale.set(s, s, s)
+  //   // const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
+  //   // const s = Math.cos(THREE.Math.degToRad(theta * 2))
+  //   theta += 0.01;
+  //   group.current.rotation.set(0, theta, 0)
+  //   // group.current.scale.set(s, s, s)
   // })
 
   const [coords, mat, pos] = useMemo(() => {
     // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
     // const geo = new THREE.BoxBufferGeometry(1, 1, 1);
-    const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('darkgrey'), transparent: true })
+    // const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('darkgrey'), transparent: true })
+    const mat = new THREE.LineDashedMaterial({ color: new THREE.Color('blue')})
+
     // const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
-    const pos = position;
+    // const pos = position;
+    const pos = 0;
     // console.log(pos);
 
     // const curve = THREE.CatmullRomCurve3([
@@ -173,9 +178,9 @@ function Thread({ position }) {
     //   new Vector3[1, 2, 0]
     // ]);       
     const threads = threadGen(
-      15,
-      new THREE.Vector3(-5, 10, -20),
-      new THREE.Vector3(5, -150, 20),
+      10,
+      new THREE.Vector3(-2, 10, -2),
+      new THREE.Vector3(2, -150, 2),
       new THREE.Vector3(20, 10, 5)
     );
 
@@ -191,7 +196,18 @@ function Thread({ position }) {
     return [coords, mat, pos]
   }, [])
 
-  return (<a.group ref={group} position={position}>
+  const factor = 5.0;
+  const x = 0;
+  const y = 0;
+  const z = 0;
+
+  return (<a.group ref={group} 
+  
+    position={interpolate([top, mouse], (top, mouse) => [
+      (-mouse[0] * factor) / 50000 + x,
+      (mouse[1] * factor) / 50000 + y * 1.15 + ((top * factor) / scrollMax) * 2,
+      z + top / 2000
+    ])}>
     {coords.map(geo =>
       <line geometry={geo} material={mat}>
         {/* <lineBasicMaterial attach="material" color="blue" /> */}
@@ -211,8 +227,7 @@ function threadGen(count, min, max, segments) {
   let threads = []
 
   for (let i = 0; i < count; i++) {
-    let points = [];
-    let moveZ = 0;
+    let points = [];    
     let x = 0;
     let z = 0;
 
@@ -226,22 +241,29 @@ function threadGen(count, min, max, segments) {
     let segIndexZ = GetRandom(0, segments.z);
     // debugger;
     for (let segY = min.y; segY >= max.y; segY += segmentStep.y) {
-      x = min.x + segIndexX * segmentStep.x;
-      z = min.z + segIndexZ * segmentStep.z;
-      points.push(new THREE.Vector3(x, segY, z));
-
-      if (GetRandomBool()) {
-        if (segIndexX < segments.x) segIndexX++;
-      } else {
-        if (segIndexX > 0) segIndexX--;        
-      }
+      
+      
+      // x = min.x + segIndexX * segmentStep.x;
+      // z = min.z + segIndexZ * segmentStep.z;
 
 
-      if (GetRandomBool()) {
-        if (segIndexZ < segments.z) segIndexZ++;
-      } else {
-        if (segIndexZ > 0) segIndexZ--;
-      }
+      x = GetRandom(min.x, max.x);
+      z = GetRandom(min.z, max.z);
+
+      points.push(new THREE.Vector3(x, segY, z));          
+
+      // if (GetRandomBool()) {
+      //   if (segIndexX < segments.x) segIndexX++;
+      // } else {
+      //   if (segIndexX > 0) segIndexX--;
+      // }
+
+
+      // if (GetRandomBool()) {
+      //   if (segIndexZ < segments.z) segIndexZ++;
+      // } else {
+      //   if (segIndexZ > 0) segIndexZ--;
+      // }
 
     }
     console.log(points);
@@ -277,8 +299,6 @@ function GetRandomBool() {
 
 // /** This component creates a bunch of parallaxed images */
 function Images({ top, mouse, scrollMax }) {  
-  console.log(data);
-  
   return data.map(([url, x, y, factor, z, scale], index) => (
     <Image
       key={index}
