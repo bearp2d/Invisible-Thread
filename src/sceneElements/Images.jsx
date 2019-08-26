@@ -23,10 +23,10 @@ export function Images({ top, mouse, scrollMax }) {
 
 /** This component loads an image and projects it onto a plane */
 export function Image({ url, opacity, scale, ...props }) {
-  // const texture = useMemo(() => new THREE.TextureLoader().load(url), [url])
-  let video = document.getElementById('video3');
-  video.play();
-  const texture = useMemo(() => new THREE.VideoTexture(video))
+  const texture = useMemo(() => new THREE.TextureLoader().load(url), [url])
+  // let video = document.getElementById('video3');
+  // video.play();
+  // const texture = useMemo(() => new THREE.VideoTexture(video))
   
   const [hovered, setHover] = useState(false)
   const hover = useCallback(() => setHover(true), [])

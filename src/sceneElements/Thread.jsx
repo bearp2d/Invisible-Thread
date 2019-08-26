@@ -27,9 +27,9 @@ export default function Thread({ top, mouse, scrollMax }) {
       const pos = 0;
       
       const threads = threadGen(
-        10,
-        new THREE.Vector3(-7, 10, -7),
-        new THREE.Vector3(7, -150, 2),
+        100,
+        new THREE.Vector3(-5, 10, -7),
+        new THREE.Vector3(5, -150, 5),
         new THREE.Vector3(20, 10, 5)
       );
   
@@ -55,9 +55,9 @@ export default function Thread({ top, mouse, scrollMax }) {
         z + top / 2000
       ])}>
       {coords.map((geo, i) =>
-        <ne geometry={geo} material={mat} key={"thread" + i}>
-          {/* <lineBasicMaterial attach="material" color="blue" /> */}
-        </ne>
+        <line geometry={geo} key={"thread" + i}>
+          <lineBasicMaterial attach="material" color="white" />
+        </line>
       )}
     </a.group>)
   }

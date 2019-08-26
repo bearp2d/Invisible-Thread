@@ -10,8 +10,8 @@ export default function Stars({ position }) {
     useRender(() => {
       const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
       const s = Math.cos(THREE.Math.degToRad(theta * 2))
-      group.current.rotation.set(r, r, r)
-      group.current.scale.set(s, s, s)
+      // group.current.rotation.set(r, r, r)
+      // group.current.scale.set(s, s, s)
     })
     const [geo, mat, coords] = useMemo(() => {
       // const geo = new THREE.SphereBufferGeometry(1, 10, 10)
