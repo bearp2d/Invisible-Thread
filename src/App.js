@@ -27,8 +27,8 @@ function App() {
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
   const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);  
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
-  cam.position.z = 5;
-  
+  cam.position.z = 0;
+
   return (
     <>
       <Canvas className="canvas" camera={cam}>
@@ -60,21 +60,28 @@ function Scene({ top, mouse }) {
 
   useRender(() => {    
     const pos = top.getValue();
-    camera.rotation.x = THREE.Math.degToRad(-(pos / 50));
-    if (pos < 3000) {
-      camera.position.z = ((500 + pos) / 100);
+    if (pos < 900) {      
+      camera.rotation.x = THREE.Math.degToRad(-(pos / 10));
     } else {
-      camera.position.z = 30;
-    }    
+      camera.rotation.x = THREE.Math.degToRad(-90);
+    }
+
+    if (pos < 900) {
+      camera.position.y = 0;      
+    } else {      
+      camera.position.y = -((pos - 900) / 100);
+    }        
   })
 
   return (
-    <>            
+    <>
       <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} />
-      {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}      
+      <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} />      
       
+      <Images top={top} mouse={mouse} scrollMax={scrollMax} />
+
       {/* <Text opacity={1} fontSize={210} >
         Invisible Thread
       </Text> */}      
