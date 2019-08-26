@@ -19,36 +19,30 @@ import { RenderPass } from './postprocessing/RenderPass'
 import { GlitchPass } from './postprocessing/GlitchPass'
 import { WaterPass } from './postprocessing/WaterPass'
 
-applySpring({ EffectComposer, RenderPass, GlitchPass, WaterPass})
-applyThree({ EffectComposer, RenderPass, GlitchPass, WaterPass})
-
+// applySpring({ EffectComposer, RenderPass, GlitchPass, WaterPass, Logger })
+// applyThree({ EffectComposer, RenderPass, GlitchPass, WaterPass, Logger, App })
 
 function App() {
   const [{ top, mouse }, set] = useSpring(() => ({ top: 0, mouse: [0, 0] }));
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
   const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);  
-
-  const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000)
-  // const cam = new THREE.OrthographicCamera(-1, 1, -1, 1, 0.1, 100)
+  const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
   cam.position.z = 5;
-  cam.rotation.x = THREE.Math.degToRad(-45);
+  
   return (
     <>
       <Canvas className="canvas" camera={cam}>
-        <Scene top={top} mouse={mouse} />
+        <Scene top={top} mouse={mouse} />        
       </Canvas>
-
-      <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>
-        {/* <Logo logo={logo} top={top} /> */}
-        <div style={{ height: '525vh' }} />
-        {/* <Banner /> */}
-        <video id="video1" loop crossOrigin="anonymous" style={{display: 'none'}}>
+      <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>        
+        <div style={{ height: '525vh' }} />        
+        <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
           <source src={heart} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
         </video>
-        <video id="video2" loop crossOrigin="anonymous" style={{display: 'none'}}>
+        <video id="video2" loop crossOrigin="anonymous" style={{ display: 'none' }}>
           <source src={video1} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
         </video>
-        <video id="video3" loop crossOrigin="anonymous" style={{display: 'none'}}>
+        <video id="video3" loop crossOrigin="anonymous" style={{ display: 'none' }}>
           <source src={video2} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
         </video>
       </div>
@@ -58,34 +52,32 @@ function App() {
 
 export default App;
 
-
-function Logo ({top, logo}) {
-  // useRender(() => {    
-  // })
-  
-  return <img src={logo} className="logo" style={{top: top.interpolate([0, 500], [1, 100]), position: "absolute"}} />
-}
-
-
 function Scene({ top, mouse }) {
   const { size } = useThree()
-  const scrollMax = size.height * 4.5
+  const scrollMax = size.height * 4.5  
+
+  const { camera } = useThree();
+
+  useRender(() => {    
+    const pos = top.getValue();
+    camera.rotation.x = THREE.Math.degToRad(-(pos / 50));
+    if (pos < 3000) {
+      camera.position.z = ((500 + pos) / 100);
+    } else {
+      camera.position.z = 30;
+    }    
+  })
+
   return (
-    <>
+    <>            
       <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} />
-      <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} />
-      {/* <Text opacity={top.interpolate([0, 200], [1, 0])} position={top.interpolate(top => [0, -1 + top / 200, 0])} fontSize={210}>
+      {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}      
+      
+      {/* <Text opacity={1} fontSize={210} >
         Invisible Thread
-      </Text> */}
-      {/* <Thread top={top} mouse={mouse} scrollMax={scrollMax} /> */}
-
-      {/* <Images top={top} mouse={mouse} scrollMax={scrollMax} /> */}
-      {/* <Thread top={top} mouse={mouse} position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
-
-      {/* <Thread position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />       */}
-
+      </Text> */}      
       {/* <Text opacity={1} position={top.interpolate(top => [0, -20 + ((top * 10) / scrollMax) * 2, 0])} fontSize={150}>
         Ipsum
       </Text> */}
@@ -118,7 +110,7 @@ const Effects = React.memo(({ factor }) => {
     <effectComposer ref={composer} args={[gl]}>
       {/* Main Pass that renders the Scene */}
       {/* <renderPass attachArray="passes" args={[scene, camera]} /> */}
-      <a.waterPass attachArray="passes" factor={factor} renderToScreen />
+      {/* <a.waterPass attachArray="passes" factor={factor} renderToScreen /> */}
 
       {/* <a.unrealBloomPass attachArray="passes" factor={factor} renderToScreen /> */}
       {/* Effect Passes renderToScreen draws current pass to screen*/}
