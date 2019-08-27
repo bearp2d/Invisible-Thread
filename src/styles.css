@@ -1,9 +1,10 @@
 * {
   box-sizing: border-box;
 }
-#div3d{
-    pointer-events: auto;
-    background-color: transparent;
+
+.panel-3d {
+  pointer-events: auto;
+  background-color: transparent;
 }
 
 html,
