@@ -40,7 +40,7 @@ function App() {
           <div id={'contact-form'} className={'panel-3d'}>
             <input />
             {/* <iframe width="640" height="400" src="https://www.youtube.com/embed/lJIrF4YjHfQ" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe> */}
-            <button onClick={()=> alert('Poop')}>ALERT</button>
+            <button onClick={()=> alert('Alert')}>ALERT</button>
           </div>
 
         </div>
