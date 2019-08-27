@@ -16,7 +16,7 @@ export function Images({ top, mouse, scrollMax }) {
       scale={scale}
       // opacity={top.interpolate([0, 500], [0, 1])}
       opacity={1}
-      position={new Vector3(0, -20, 0)}
+      position={new Vector3(0, -10, 0)}
       // position={interpolate([top, mouse], (top, mouse) => [
       //   (-mouse[0] * factor) / 50000 + x,
       //   (mouse[1] * factor) / 50000 + y * 1.15 + ((top * factor) / scrollMax) * 2,

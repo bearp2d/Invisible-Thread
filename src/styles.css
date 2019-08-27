@@ -3,8 +3,12 @@
 }
 
 .panel-3d {
-  pointer-events: auto;
+  pointer-events: none;
   background-color: transparent;
+}
+
+.panel-3d * {
+  pointer-events: auto;
 }
 
 html,

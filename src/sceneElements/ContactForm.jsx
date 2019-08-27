@@ -11,9 +11,9 @@ export default function ContactForm() {
     useEffect(() => {
       // var element = document.createElement('div');
       var element = document.getElementById('contact-form');    
-      element.style.zIndex = '-3';
-      element.style.width = '70px';
-      element.style.height = '70px';
+      // element.style.zIndex = '0';
+      element.style.width = '100vw';
+      element.style.height = '100vh';
       element.style.background = new THREE.Color( Math.random() * 0xffffff ).getStyle();
   
       var object = new CSS3DObject(element);
@@ -36,50 +36,17 @@ export default function ContactForm() {
       renderer.domElement.style.top = '0';
       renderer.domElement.style.pointerEvents = 'none'
       document.body.appendChild(renderer.domElement);
-  
-      renderer.render(scene, camera);
-  
+            
+      window.addEventListener( 'resize', onWindowResize, false );
+      function onWindowResize() {				
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
     }, [])
   
-  
     useRender(() => {
-  
       renderer.render(scene, camera);
     })
-  
-  
-  
-  
-  
-    // var geometry = new THREE.PlaneBufferGeometry(75, 75);
-    // var mesh = new THREE.Mesh(geometry, material);
-    // mesh.position.copy(object.position);
-    // mesh.rotation.copy(object.rotation);
-    // mesh.scale.copy(object.scale);
-  
-    const styles = {
-      zIndex: '-3',
-      width: '70px',
-      height: '70px',
-      background: new THREE.Color(Math.random() * 0xffffff).getStyle(),
-    }
-  
-  
+
     return <>
     </>
-  
-    // return <mesh
-    //   geometry={new THREE.PlaneBufferGeometry(75, 75)}
-    //   material={material}
-    // // position={object.position}
-    // // rotation={object.rotation}
-    // // scale={object.scale} />
-    // />
-  
-  
-  
-  
-  
-  
-  
   }
