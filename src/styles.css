@@ -1,6 +1,10 @@
 * {
   box-sizing: border-box;
 }
+#div3d{
+    pointer-events: auto;
+    background-color: transparent;
+}
 
 html,
 body,
@@ -17,7 +21,9 @@ body,
   -ms-user-select: none;
   user-select: none;
   overflow: hidden;
+
 }
+
 
 html,
 body {
