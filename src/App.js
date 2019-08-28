@@ -2,6 +2,7 @@ import * as THREE from 'three/src/Three'
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { apply as applyThree, Canvas, useRender, useThree } from 'react-three-fiber'
 import { apply as applySpring, useSpring, a, interpolate, config } from 'react-spring/three'
+import { a as aDom } from '@react-spring/web'
 import './styles.css'
 import { Images, Image } from './sceneElements/Images'
 import Text from './sceneElements/Text'
@@ -11,7 +12,10 @@ import heart from './images/heart.mp4'
 import video1 from './images/small/video1.mp4'
 import video2 from './images/small/video2.mp4'
 import logo from './images/thisSVG.svg'
-import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+
+import useYScroll from './helpers/useYScroll'
+
+
 // Import and register postprocessing classes as three-native-elements for both react-three-fiber & react-spring
 // They'll be available as native elements <effectComposer /> from then on ...
 import { EffectComposer } from './postprocessing/EffectComposer'
@@ -31,26 +35,21 @@ function App() {
   const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
   cam.position.z = 0;
-  // {({ absolute, alpha, beta, gamma }) => (
-  //   <div>
-  //     {`Absolute: ${absolute}`}
-  //     {`Alpha: ${alpha}`}
-  //     {`Beta: ${beta}`}
-  //     {`Gamma: ${gamma}`}
-  //   </div>
-  // )}
+
+  const [y] = useYScroll([-100, 2400], { domTarget: window })
+
   return (
-    <>      
+    <>
       <Canvas className="canvas" camera={cam}>
         <Scene top={top} mouse={mouse} />
       </Canvas>
-      <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>
-        <div style={{ height: '1000vh' }}>
-
-          {/* <div id={'contact-form'} className={'panel-3d'}>
-            <input />          
+      <aDom.div className="bar" style={{ height: y.interpolate([-100, 2400], ['0%', '100%']) }} />      
+      {/* <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>
+        <div style={{ height: '1000vh', backgroundColor: 'transparent' }}>
+          <div id={'contact-form'} className={'panel-3d'}>
+            <input />
             <button onClick={() => alert('Alert')}>ALERT</button>
-          </div> */}
+          </div>
 
         </div>
         <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
@@ -62,7 +61,7 @@ function App() {
         <video id="video3" loop crossOrigin="anonymous" style={{ display: 'none' }}>
           <source src={video2} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
         </video>
-      </div>
+      </div> */}
     </>
   );
 }
@@ -76,7 +75,7 @@ function Scene({ top, mouse }) {
 
   const { camera } = useThree();
 
-  const [{ rotation }, set] = useSpring(() => ({ rotation: 0, config: config.molasses }));  
+  const [{ rotation }, set] = useSpring(() => ({ rotation: 0, config: config.molasses }));
 
   // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});  
   useEffect(() => {
@@ -87,7 +86,7 @@ function Scene({ top, mouse }) {
   useRender(() => {
     const pos = top.getValue();
     camera.position.x = 0;
-    camera.position.z = 0;
+    camera.position.z = -5;
 
     if (pos < vh(1)) {
       set({ rotation: 0 });
@@ -110,10 +109,10 @@ function Scene({ top, mouse }) {
       (mousePos[0] * 10) / 50000 - camera.position.x,
       0,
       (mousePos[1] * 10) / 50000 - camera.position.z)
-    
-    
+
+
     camera.position.lerp(cameraOffset, 0.8);
-    
+
     // camera.position +=
 
   })
@@ -125,7 +124,7 @@ function Scene({ top, mouse }) {
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
       <Images top={top} mouse={mouse} scrollMax={scrollMax} />
-
+      <Thing />
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
       {/* <ContactForm /> */}
       {/* <Text opacity={1} fontSize={210} >
@@ -185,5 +184,25 @@ function Background({ color }) {
       <planeGeometry attach="geometry" args={[1, 1]} />
       <a.meshBasicMaterial attach="material" color={color} depthTest={false} />
     </mesh>
+  )
+}
+
+
+function Thing({ vertices = [[-1, 0, 0], [0, 1, 0], [1, 0, 0], [0, -1, 0], [-1, 0, 0]] }) {
+  return (
+    <group ref={ref => console.log('we have access to the instance')}>
+      <line>
+        <geometry
+          attach="geometry"
+          vertices={vertices.map(v => new THREE.Vector3(...v))}
+          onUpdate={self => (self.verticesNeedUpdate = true)}
+        />
+        <lineBasicMaterial attach="material" color="black" />
+      </line>
+      <mesh onClick={e => console.log('click')} onPointerOver={e => console.log('hover')} onPointerOut={e => console.log('unhover')}>
+        <octahedronGeometry attach="geometry" />
+        <meshBasicMaterial attach="material" color="peachpuff" opacity={0.5} transparent />
+      </mesh>
+    </group>
   )
 }
