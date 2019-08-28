@@ -1,6 +1,6 @@
 import * as THREE from 'three/src/Three'
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
-import { apply as applySpring, useSpring, a, interpolate } from 'react-spring/three'
+import { apply as applySpring, useSpring, a, interpolate, config } from 'react-spring/three'
 import data from '../data'
 import { Mesh, Vector3, Material, BufferGeometry, BoxBufferGeometry } from 'three/src/Three';
 import { GetRandom } from './HelperFuncitons'
@@ -40,7 +40,6 @@ export function Images({ top, mouse, scrollMax }) {
 /** This component loads an image and projects it onto a plane */
 export function Image({ url, opacity, scale, startPosition, ...props }) {
   const texture = useMemo(() => new THREE.TextureLoader().load(url), [url])
-
   // const texture = useMemo(() => new THREE.MeshBasicMaterial({ color: new THREE.Color('green'), transparent: true }));  
 
   // let video = document.getElementById('video3');
@@ -58,22 +57,26 @@ export function Image({ url, opacity, scale, startPosition, ...props }) {
   // });
 
 
-  const [hovered, setHover] = useState(false)
+  const [hovered, setHover] = useState(false)  
+
   const hover = useCallback(() => {
     setHover(true)
-    console.log('hover');
-  }
-    , [])
-  const unhover = useCallback(() => setHover(false), [])
+  }, [])
+  const unhover = useCallback(() => {
+    setHover(false)
+  }, [])
+  
   const { factor } = useSpring({ factor: hovered ? 1.1 : 1 })
-
-  const { position } = useSpring({ position: hovered ? [0, startPosition.y, 0] : [0, startPosition.y, 0] })  
+  const { position } = useSpring({ position: hovered ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z], config: config.molasses })
 
   return (
     <a.mesh {...props}
-
       // position={position.interpolate(e => [e[0], e[1], e[2]])} 
-      position={position}
+      // position={position.interpolate((x, y, z) => {
+      //   let vec = new Vector3(x, y, z).lerp(new Vector3(), 0.001);
+      //   return [vec.x, vec.y, vec.z]
+      // })}
+      position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
 
       onPointerOver={hover} onPointerOut={unhover} scale={factor.interpolate(f => [scale * f, scale * f, 1])}>
       {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
