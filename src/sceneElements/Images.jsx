@@ -3,20 +3,27 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { apply as applySpring, useSpring, a, interpolate } from 'react-spring/three'
 import data from '../data'
 import { Mesh, Vector3, Material, BufferGeometry, BoxBufferGeometry } from 'three/src/Three';
+import { GetRandom } from './HelperFuncitons'
 
 //Image object
 export function Images({ top, mouse, scrollMax }) {
   //Load images from data.js  
 
   const imageList = useMemo(() => data.map(([url, animation], i) => {    
-    let x = i % 2 == 0 ? 1 : -1;
+    // let x = i % 2 == 0 ? 1 : -1;    
 
-    let startPosition = [x, -8 - (i * 4), 0]
-    return [url, animation, startPosition];
+    let degree = GetRandom(0, 360);
+    let radius = 1;
+    let x = radius * Math.sin(degree);
+    let y = -8 - (i * 4);
+    let z = radius * Math.cos(degree);
+
+    let startPosition = [x, y, z]
+    return [url, animation, startPosition, 10];
   }), [data])
   
 
-  return imageList.map(([url, animation, [x, y, z]], index) => (
+  return imageList.map(([url, animation, [x, y, z], factor], index) => (
     <Image
       rotation={new THREE.Euler(THREE.Math.degToRad(-90))}
       key={index}
@@ -25,11 +32,6 @@ export function Images({ top, mouse, scrollMax }) {
       // opacity={top.interpolate([0, 500], [0, 1])}
       opacity={1}
       position={new Vector3(x, y, z)}
-      // position={interpolate([top, mouse], (top, mouse) => [
-      //   (-mouse[0] * factor) / 50000 + x,
-      //   (mouse[1] * factor) / 50000 + y * 1.15 + ((top * factor) / scrollMax) * 2,
-      //   z + top / 2000
-      // ])}
     />
   ))
 }

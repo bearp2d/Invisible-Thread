@@ -47,11 +47,10 @@ function App() {
       <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>
         <div style={{ height: '1000vh' }}>
 
-          <div id={'contact-form'} className={'panel-3d'}>
-            <input />
-            {/* <iframe width="640" height="400" src="https://www.youtube.com/embed/lJIrF4YjHfQ" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe> */}
+          {/* <div id={'contact-form'} className={'panel-3d'}>
+            <input />          
             <button onClick={() => alert('Alert')}>ALERT</button>
-          </div>
+          </div> */}
 
         </div>
         <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
@@ -86,7 +85,10 @@ function Scene({ top, mouse }) {
 
 
   useRender(() => {
-    const pos = top.getValue();    
+    const pos = top.getValue();
+    camera.position.x = 0;
+    camera.position.z = 0;
+
     if (pos < vh(1)) {
       set({ rotation: 0 });
       // set({ rotation: -(pos / (vh(100) * 0.9)) });
@@ -101,8 +103,19 @@ function Scene({ top, mouse }) {
     if (pos < vh(1)) {
       camera.position.y = 0;
     } else {
-      camera.position.y = -((pos / vh(1) * 0.05));
-    }
+      camera.position.y = -((pos / vh(1) * 0.08));
+    }        
+    const mousePos = mouse.getValue();
+    let cameraOffset = new THREE.Vector3(
+      (mousePos[0] * 10) / 50000 - camera.position.x,
+      0,
+      (mousePos[1] * 10) / 50000 - camera.position.z)
+    
+    
+    camera.position.lerp(cameraOffset, 0.8);
+    
+    // camera.position +=
+
   })
 
   return (
@@ -113,8 +126,8 @@ function Scene({ top, mouse }) {
       <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} />
       <Images top={top} mouse={mouse} scrollMax={scrollMax} />
 
-      <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} />
-      <ContactForm />
+      {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
+      {/* <ContactForm /> */}
       {/* <Text opacity={1} fontSize={210} >
         Invisible Thread
       </Text> */}
