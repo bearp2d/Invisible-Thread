@@ -16,6 +16,9 @@ import logo from './images/thisSVG.svg'
 import useYScroll from './helpers/useYScroll'
 
 
+import logoPngBlk from './images/logo_black.png'
+import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+import CFStyles from './sceneElements/contactFormStyles.css';
 // Import and register postprocessing classes as three-native-elements for both react-three-fiber & react-spring
 // They'll be available as native elements <effectComposer /> from then on ...
 import { EffectComposer } from './postprocessing/EffectComposer'
@@ -50,21 +53,58 @@ function App() {
         <button onClick={() => alert('Alert')}>ALERT</button>
       </div>
 
-      {/* <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>
-        <div style={{ height: '1000vh', backgroundColor: 'transparent' }}>
-          
-
+      <div className="nav">
+        {/* <a href="#" className="menu-activator"><i className="ion-ios-more"></i></a>*/}
+        <img src={logoPngBlk} style={{ width: '250px' }} />
+        {/* <a href="#" className="white link"><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>*/}
+      </div>
+      <div className="container">
+        <div className="inner">
+          <div className="panel panel-left">
+            <div className="panel-content">
+              <div className="image-background">
+              </div>
+            </div>
+          </div>
+          <div className="panel panel-right">
+            <div className="panel-content">
+              <div className="form">
+                <h1>Let's chat!</h1>
+                <div className="group">
+                  <input type="text" required />
+                  <span className="highlight"></span>
+                  <label>Your name</label>
+                </div>
+                <br />
+                <div className="group">
+                  <input type="text" required />
+                  <span className="highlight"></span>
+                  <label>Your email</label>
+                </div>
+                <br />
+                <div className="group">
+                  <input type="text" required />
+                  <span className="highlight"></span>
+                  <label>Message</label>
+                </div>
+                <br />
+                <a className="send-btn">Send</a>
+              </div>
+            </div>
+          </div>
         </div>
-        <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
-          <source src={heart} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-        </video>
-        <video id="video2" loop crossOrigin="anonymous" style={{ display: 'none' }}>
-          <source src={video1} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-        </video>
-        <video id="video3" loop crossOrigin="anonymous" style={{ display: 'none' }}>
-          <source src={video2} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-        </video>
-      </div> */}
+      </div>
+      <div className="menu"></div>
+
+      <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
+        <source src={heart} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+      </video>
+      <video id="video2" loop crossOrigin="anonymous" style={{ display: 'none' }}>
+        <source src={video1} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+      </video>
+      <video id="video3" loop crossOrigin="anonymous" style={{ display: 'none' }}>
+        <source src={video2} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+      </video>    
     </>
   );
 }
@@ -80,7 +120,7 @@ function Scene({ top, mouse }) {
 
   const [{ rotation }, set] = useSpring(() => ({ rotation: 0, config: config.molasses }));
 
-  // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});  
+  // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});
   useEffect(() => {
     // newScene(camera);
   }, [])
@@ -101,7 +141,7 @@ function Scene({ top, mouse }) {
     camera.rotation.x = THREE.Math.degToRad(rotation.getValue());
     // } else {
     // camera.rotation.x = THREE.Math.degToRad(-90);
-    // }    
+    // }
     if (pos < vh(1)) {
       camera.position.y = 0;
     } else {
