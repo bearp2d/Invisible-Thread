@@ -4,6 +4,7 @@ import { apply as applySpring, useSpring, a, interpolate } from 'react-spring/th
 import data from '../data'
 import { Mesh, Vector3, Material, BufferGeometry, BoxBufferGeometry } from 'three/src/Three';
 import { GetRandom } from './HelperFuncitons'
+import { useRender } from 'react-three-fiber';
 
 //Image object
 export function Images({ top, mouse, scrollMax }) {
@@ -31,28 +32,43 @@ export function Images({ top, mouse, scrollMax }) {
       scale={1}      
       // opacity={top.interpolate([0, 500], [0, 1])}
       opacity={1}
-      position={new Vector3(x, y, z)}
+      startPosition={new Vector3(x, y, z)}
     />
   ))
 }
 
 /** This component loads an image and projects it onto a plane */
-export function Image({ url, opacity, scale, ...props }) {
+export function Image({ url, opacity, scale, startPosition, ...props }) {
   const texture = useMemo(() => new THREE.TextureLoader().load(url), [url])
+  const [position, setPosition] = useState(startPosition)
+
   // const texture = useMemo(() => new THREE.MeshBasicMaterial({ color: new THREE.Color('green'), transparent: true }));  
-  console.log(url);
   
   // let video = document.getElementById('video3');
   // video.play();
   // const texture = useMemo(() => new THREE.VideoTexture(video))
   // const x = new BoxBufferGeometry(1, 1, 1)
 
+
+  useRender(() => {
+    if (hovered) {
+      setPosition(position.lerp(new Vector3(), 0.1))      
+    } else {
+      setPosition(position.lerp(startPosition, 0.1))      
+    }
+  });
+
+
   const [hovered, setHover] = useState(false)
-  const hover = useCallback(() => setHover(true), [])
+  const hover = useCallback(() => {
+    setHover(true)
+    console.log('hover');    
+  }
+  , [])
   const unhover = useCallback(() => setHover(false), [])
   const { factor } = useSpring({ factor: hovered ? 1.1 : 1 })
   return (
-    <a.mesh {...props} onHover={hover} onUnhover={unhover} scale={factor.interpolate(f => [scale * f, scale * f, 1])}>
+    <a.mesh {...props} position={position} onPointerOver={e => console.log("hover")} onPointerOut={unhover} scale={factor.interpolate(f => [scale * f, scale * f, 1])}>
       {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
       <planeGeometry attach="geometry" args={[1, 1, 1]} />
       {/* <a.meshBasicMaterial attach="material" args={texture} /> */}

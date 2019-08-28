@@ -103,8 +103,8 @@ function Scene({ top, mouse }) {
     if (pos < vh(1)) {
       camera.position.y = 0;
     } else {
-      camera.position.y = -((pos / vh(1) * 0.08));
-    }        
+      camera.position.y = -((pos / vh(1) * 0.5));
+    }
     const mousePos = mouse.getValue();
     let cameraOffset = new THREE.Vector3(
       (mousePos[0] * 10) / 50000 - camera.position.x,
@@ -123,7 +123,7 @@ function Scene({ top, mouse }) {
       {/* <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
       <a.pointLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
-      <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} />
+      {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
       <Images top={top} mouse={mouse} scrollMax={scrollMax} />
 
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
