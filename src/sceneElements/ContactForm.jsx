@@ -6,16 +6,19 @@ import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRe
 export default function ContactForm() {
     var renderer;
     let { scene, gl, camera } = useThree();
-  
+
     var material = new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true, wireframeLinewidth: 1, side: THREE.DoubleSide });
     useEffect(() => {
       // var element = document.createElement('div');
-      var element = document.getElementById('contact-form');    
+      var element = document.getElementById('contact-form');
       // element.style.zIndex = '0';
       element.style.width = '100vw';
       element.style.height = '100vh';
-      element.style.background = new THREE.Color( Math.random() * 0xffffff ).getStyle();
-  
+      element.style.background = '#ffffff';
+      element.style.color = 'white';
+      element.style.display = 'block';
+      element.style.textAlign = 'center';
+
       var object = new CSS3DObject(element);
       object.position.x = 0;
       object.position.y = -20;
@@ -27,7 +30,7 @@ export default function ContactForm() {
       object.scale.x = 0.01;
       object.scale.y = 0.01;
       scene.add(object);
-  
+
       renderer = new CSS3DRenderer();
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.domElement.style.width = '100vw';
@@ -36,13 +39,13 @@ export default function ContactForm() {
       renderer.domElement.style.top = '0';
       renderer.domElement.style.pointerEvents = 'none'
       document.body.appendChild(renderer.domElement);
-            
+
       window.addEventListener( 'resize', onWindowResize, false );
-      function onWindowResize() {				
+      function onWindowResize() {
 				renderer.setSize( window.innerWidth, window.innerHeight );
 			}
     }, [])
-  
+
     useRender(() => {
       renderer.render(scene, camera);
     })

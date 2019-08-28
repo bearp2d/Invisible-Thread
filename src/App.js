@@ -11,7 +11,9 @@ import heart from './images/heart.mp4'
 import video1 from './images/small/video1.mp4'
 import video2 from './images/small/video2.mp4'
 import logo from './images/thisSVG.svg'
+import logoPngBlk from './images/logo_black_on_white_v03.png'
 import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
+import CFStyles from './sceneElements/contactFormStyles.css';
 // Import and register postprocessing classes as three-native-elements for both react-three-fiber & react-spring
 // They'll be available as native elements <effectComposer /> from then on ...
 import { EffectComposer } from './postprocessing/EffectComposer'
@@ -40,7 +42,7 @@ function App() {
   //   </div>
   // )}
   return (
-    <>      
+    <>
       <Canvas className="canvas" camera={cam}>
         <Scene top={top} mouse={mouse} />
       </Canvas>
@@ -48,9 +50,48 @@ function App() {
         <div style={{ height: '1000vh' }}>
 
           <div id={'contact-form'} className={'panel-3d'}>
-            <input />
+
+        <div className="nav">
+          <a href="#" className="menu-activator"><i className="ion-ios-more"></i></a>
+          <img src={logoPngBlk} style={{width:'150px'}}/>
+          <a href="#" className="white link"><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>
+        </div>
+        <div className="container">
+          <div className="inner">
+            <div className="panel panel-left">
+              <div className="panel-content">
+                <div className="image-background">
+                </div>
+              </div>
+            </div>
+            <div className="panel panel-right">
+              <div className="panel-content">
+                <div className="form">
+                  <h1>Let's chat!</h1>
+                  <div className="group">
+                    <input type="text" required />
+                    <span className="highlight"></span>
+                    <label>Your name</label>
+                  </div>
+                  <div className="group">
+                    <input type="text" required />
+                    <span className="highlight"></span>
+                    <label>Your email</label>
+                  </div>
+                   <div className="group">
+                    <input type="text" required />
+                    <span className="highlight"></span>
+                    <label>Message</label>
+                  </div>
+                  <a className="send-btn">Send</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    <div className="menu"></div>
+
             {/* <iframe width="640" height="400" src="https://www.youtube.com/embed/lJIrF4YjHfQ" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe> */}
-            <button onClick={() => alert('Alert')}>ALERT</button>
           </div>
 
         </div>
@@ -77,16 +118,16 @@ function Scene({ top, mouse }) {
 
   const { camera } = useThree();
 
-  const [{ rotation }, set] = useSpring(() => ({ rotation: 0, config: config.molasses }));  
+  const [{ rotation }, set] = useSpring(() => ({ rotation: 0, config: config.molasses }));
 
-  // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});  
+  // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});
   useEffect(() => {
     // newScene(camera);
   }, [])
 
 
   useRender(() => {
-    const pos = top.getValue();    
+    const pos = top.getValue();
     if (pos < vh(1)) {
       set({ rotation: 0 });
       // set({ rotation: -(pos / (vh(100) * 0.9)) });
@@ -97,7 +138,7 @@ function Scene({ top, mouse }) {
     camera.rotation.x = THREE.Math.degToRad(rotation.getValue());
     // } else {
     // camera.rotation.x = THREE.Math.degToRad(-90);
-    // }    
+    // }
     if (pos < vh(1)) {
       camera.position.y = 0;
     } else {
