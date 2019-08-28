@@ -38,15 +38,15 @@ function App() {
   const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
   cam.position.z = 0;
-
-  const [y] = useYScroll([-100, 2400], { domTarget: window })
+    
+  const [y] = useYScroll([0, 2400], { domTarget: window })
 
   return (
     <>
       <Canvas className="canvas" camera={cam} onMouseMove={onMouseMove}>
         <Scene top={y} mouse={mouse} />
       </Canvas>
-      <aDom.div className="bar" style={{ height: y.interpolate([-100, 2400], ['0%', '100%']) }} />
+      <aDom.div className="bar" style={{ height: y.interpolate([0, 2400], ['0%', '100%']) }} />
 
       <ContactFormElement />
       
