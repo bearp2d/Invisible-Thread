@@ -4,7 +4,8 @@ import { useGesture } from 'react-use-gesture'
 import clamp from 'lodash/clamp'
 
 export default function useYScroll(bounds, props) {
-  const [{ y }, set] = useSpring(() => ({ y: 0, config: config.slow }))
+  // const [{ y }, set] = useSpring(() => ({ y: 0, config: config.slow }))
+  const [{ y }, set] = useSpring(() => ({ y: 0 }))
   const fn = useCallback(
     ({ xy: [, cy], previous: [, py], memo = y.getValue() }) => {
       const newY = clamp(memo + cy - py, ...bounds)

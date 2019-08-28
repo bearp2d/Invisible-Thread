@@ -41,15 +41,18 @@ function App() {
   return (
     <>
       <Canvas className="canvas" camera={cam}>
-        <Scene top={top} mouse={mouse} />
+        <Scene top={y} mouse={mouse} />
       </Canvas>
-      <aDom.div className="bar" style={{ height: y.interpolate([-100, 2400], ['0%', '100%']) }} />      
+      <aDom.div className="bar" style={{ height: y.interpolate([-100, 2400], ['0%', '100%']) }} />
+
+      <div id={'contact-form'} className={'panel-3d'}>
+        <input />
+        <button onClick={() => alert('Alert')}>ALERT</button>
+      </div>
+
       {/* <div className="scroll-container" onScroll={onScroll} onMouseMove={onMouseMove}>
         <div style={{ height: '1000vh', backgroundColor: 'transparent' }}>
-          <div id={'contact-form'} className={'panel-3d'}>
-            <input />
-            <button onClick={() => alert('Alert')}>ALERT</button>
-          </div>
+          
 
         </div>
         <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
@@ -86,7 +89,7 @@ function Scene({ top, mouse }) {
   useRender(() => {
     const pos = top.getValue();
     camera.position.x = 0;
-    camera.position.z = -5;
+    camera.position.z = 0;
 
     if (pos < vh(1)) {
       set({ rotation: 0 });
@@ -124,9 +127,9 @@ function Scene({ top, mouse }) {
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
       <Images top={top} mouse={mouse} scrollMax={scrollMax} />
-      <Thing />
+      {/* <Thing /> */}
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
-      {/* <ContactForm /> */}
+      <ContactForm />
       {/* <Text opacity={1} fontSize={210} >
         Invisible Thread
       </Text> */}

@@ -10,7 +10,7 @@ import { useRender } from 'react-three-fiber';
 export function Images({ top, mouse, scrollMax }) {
   //Load images from data.js  
 
-  const imageList = useMemo(() => data.map(([url, animation], i) => {    
+  const imageList = useMemo(() => data.map(([url, animation], i) => {
     // let x = i % 2 == 0 ? 1 : -1;    
 
     let degree = GetRandom(0, 360);
@@ -22,14 +22,14 @@ export function Images({ top, mouse, scrollMax }) {
     let startPosition = [x, y, z]
     return [url, animation, startPosition, 10];
   }), [data])
-  
+
 
   return imageList.map(([url, animation, [x, y, z], factor], index) => (
     <Image
       rotation={new THREE.Euler(THREE.Math.degToRad(-90))}
       key={index}
       url={url}
-      scale={1}      
+      scale={1}
       // opacity={top.interpolate([0, 500], [0, 1])}
       opacity={1}
       startPosition={new Vector3(x, y, z)}
@@ -40,35 +40,42 @@ export function Images({ top, mouse, scrollMax }) {
 /** This component loads an image and projects it onto a plane */
 export function Image({ url, opacity, scale, startPosition, ...props }) {
   const texture = useMemo(() => new THREE.TextureLoader().load(url), [url])
-  const [position, setPosition] = useState(startPosition)
 
   // const texture = useMemo(() => new THREE.MeshBasicMaterial({ color: new THREE.Color('green'), transparent: true }));  
-  
+
   // let video = document.getElementById('video3');
   // video.play();
   // const texture = useMemo(() => new THREE.VideoTexture(video))
   // const x = new BoxBufferGeometry(1, 1, 1)
 
 
-  useRender(() => {
-    if (hovered) {
-      setPosition(position.lerp(new Vector3(), 0.1))      
-    } else {
-      setPosition(position.lerp(startPosition, 0.1))      
-    }
-  });
+  // useRender(() => {
+  //   if (hovered) {
+  //     setPosition(position.lerp(new Vector3(), 0.1))      
+  //   } else {
+  //     setPosition(position.lerp(startPosition, 0.1))      
+  //   }
+  // });
 
 
   const [hovered, setHover] = useState(false)
   const hover = useCallback(() => {
     setHover(true)
-    console.log('hover');    
+    console.log('hover');
   }
-  , [])
+    , [])
   const unhover = useCallback(() => setHover(false), [])
   const { factor } = useSpring({ factor: hovered ? 1.1 : 1 })
+
+  const { position } = useSpring({ position: hovered ? [0, startPosition.y, 0] : [0, startPosition.y, 0] })  
+
   return (
-    <a.mesh {...props} position={position} onPointerOver={e => console.log("hover")} onPointerOut={unhover} scale={factor.interpolate(f => [scale * f, scale * f, 1])}>
+    <a.mesh {...props}
+
+      // position={position.interpolate(e => [e[0], e[1], e[2]])} 
+      position={position}
+
+      onPointerOver={hover} onPointerOut={unhover} scale={factor.interpolate(f => [scale * f, scale * f, 1])}>
       {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
       <planeGeometry attach="geometry" args={[1, 1, 1]} />
       {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
