@@ -13,12 +13,12 @@ import video1 from './images/small/video1.mp4'
 import video2 from './images/small/video2.mp4'
 import logo from './images/thisSVG.svg'
 
+import ContactFormElement from './sceneElements/ContactFormElement'
+
 import useYScroll from './helpers/useYScroll'
 
-
-import logoPngBlk from './images/logo_black.png'
 import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
-import CFStyles from './sceneElements/contactFormStyles.css';
+
 // Import and register postprocessing classes as three-native-elements for both react-three-fiber & react-spring
 // They'll be available as native elements <effectComposer /> from then on ...
 import { EffectComposer } from './postprocessing/EffectComposer'
@@ -48,54 +48,8 @@ function App() {
       </Canvas>
       <aDom.div className="bar" style={{ height: y.interpolate([-100, 2400], ['0%', '100%']) }} />
 
-      <div id={'contact-form'} className={'panel-3d'}>
-        <input />
-        <button onClick={() => alert('Alert')}>ALERT</button>
-      </div>
-
-      <div className="nav">
-        {/* <a href="#" className="menu-activator"><i className="ion-ios-more"></i></a>*/}
-        <img src={logoPngBlk} style={{ width: '250px' }} />
-        {/* <a href="#" className="white link"><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>*/}
-      </div>
-      <div className="container">
-        <div className="inner">
-          <div className="panel panel-left">
-            <div className="panel-content">
-              <div className="image-background">
-              </div>
-            </div>
-          </div>
-          <div className="panel panel-right">
-            <div className="panel-content">
-              <div className="form">
-                <h1>Let's chat!</h1>
-                <div className="group">
-                  <input type="text" required />
-                  <span className="highlight"></span>
-                  <label>Your name</label>
-                </div>
-                <br />
-                <div className="group">
-                  <input type="text" required />
-                  <span className="highlight"></span>
-                  <label>Your email</label>
-                </div>
-                <br />
-                <div className="group">
-                  <input type="text" required />
-                  <span className="highlight"></span>
-                  <label>Message</label>
-                </div>
-                <br />
-                <a className="send-btn">Send</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="menu"></div>
-
+      <ContactFormElement />
+      
       <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
         <source src={heart} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
       </video>
@@ -167,7 +121,7 @@ function Scene({ top, mouse }) {
       <Images top={top} mouse={mouse} scrollMax={scrollMax} />
       {/* <Thing /> */}
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
-      {/* <ContactForm /> */}
+      <ContactForm />
       {/* <Text opacity={1} fontSize={210} >
         Invisible Thread
       </Text> */}
