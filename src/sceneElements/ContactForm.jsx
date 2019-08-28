@@ -15,7 +15,6 @@ export default function ContactForm() {
       element.style.width = '100vw';
       element.style.height = '100vh';
       element.style.background = '#ffffff';
-      element.style.color = 'white';
       element.style.display = 'block';
       element.style.textAlign = 'center';
 

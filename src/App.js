@@ -11,7 +11,7 @@ import heart from './images/heart.mp4'
 import video1 from './images/small/video1.mp4'
 import video2 from './images/small/video2.mp4'
 import logo from './images/thisSVG.svg'
-import logoPngBlk from './images/logo_black_on_white_v03.png'
+import logoPngBlk from './images/logo_black.png'
 import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
 import CFStyles from './sceneElements/contactFormStyles.css';
 // Import and register postprocessing classes as three-native-elements for both react-three-fiber & react-spring
@@ -52,9 +52,9 @@ function App() {
           <div id={'contact-form'} className={'panel-3d'}>
 
         <div className="nav">
-          <a href="#" className="menu-activator"><i className="ion-ios-more"></i></a>
-          <img src={logoPngBlk} style={{width:'150px'}}/>
-          <a href="#" className="white link"><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>
+          {/* <a href="#" className="menu-activator"><i className="ion-ios-more"></i></a>*/}
+          <img src={logoPngBlk} style={{width:'250px'}}/>
+          {/* <a href="#" className="white link"><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>*/}
         </div>
         <div className="container">
           <div className="inner">
@@ -73,16 +73,19 @@ function App() {
                     <span className="highlight"></span>
                     <label>Your name</label>
                   </div>
+                    <br />
                   <div className="group">
                     <input type="text" required />
                     <span className="highlight"></span>
                     <label>Your email</label>
                   </div>
+                    <br />
                    <div className="group">
                     <input type="text" required />
                     <span className="highlight"></span>
                     <label>Message</label>
                   </div>
+                    <br />
                   <a className="send-btn">Send</a>
                 </div>
               </div>
