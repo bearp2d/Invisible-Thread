@@ -14,7 +14,7 @@ export function Images({ top, mouse, scrollMax }) {
     // let x = i % 2 == 0 ? 1 : -1;    
 
     let degree = GetRandom(0, 360);
-    let radius = 1;
+    let radius = 2;
     let x = radius * Math.sin(degree);
     let y = -8 - (i * 4);
     let z = radius * Math.cos(degree);
@@ -42,7 +42,7 @@ export function Image({ url, opacity, scale, startPosition, ...props }) {
   const texture = useMemo(() => new THREE.TextureLoader().load(url), [url])
   // const texture = useMemo(() => new THREE.MeshBasicMaterial({ color: new THREE.Color('green'), transparent: true }));  
 
-  // let video = document.getElementById('video3');
+  // let video = document.getElementById('video1');
   // video.play();
   // const texture = useMemo(() => new THREE.VideoTexture(video))
   // const x = new BoxBufferGeometry(1, 1, 1)

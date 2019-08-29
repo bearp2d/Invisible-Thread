@@ -121,7 +121,7 @@ function Scene({ top, mouse }) {
       <Images top={top} mouse={mouse} scrollMax={scrollMax} />
       {/* <Thing /> */}
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
-      <ContactForm />
+      {/* <ContactForm /> */}
       {/* <Text opacity={1} fontSize={210} >
         Invisible Thread
       </Text> */}

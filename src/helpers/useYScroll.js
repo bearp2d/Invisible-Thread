@@ -18,22 +18,12 @@ export default function useYScroll(bounds, props) {
   )
 
 
-  const [offset, setOffset] = useState(0)
-  const fn2 = useCallback(({ xy }) => {    
-    let os = offset;
-    let y = xy[1];
-    if (y < bounds[0]) {
-      if (y < os) {
-        os = y;
-      }
-    }
-    if (y > bounds[1]) {
-      os = y- bounds[1];
-    }
-    console.log(y);
-    console.log(os);
-    set({ y: y - os })
-    setOffset(os);    
+  const [offset, setOffset] = useState({last: 0, scroll: 0})
+
+  const fn2 = useCallback(({ xy: [, y] }) => {
+    const scroll = clamp(offset.scroll + (y - offset.last), ...bounds)
+    setOffset({last: y, scroll: scroll});    
+    set({ y: scroll })
   })
 
 
