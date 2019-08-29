@@ -59,12 +59,18 @@ export function Image({ url, opacity, scale, startPosition, ...props }) {
 
   const [hovered, setHover] = useState(false)  
 
-  const hover = useCallback(() => {
+  const hover = useCallback(e => {
+    e.stopPropagation();
     setHover(true)
   }, [])
-  const unhover = useCallback(() => {
+  const unhover = useCallback(e => {
     setHover(false)
   }, [])
+  const toggle = useCallback(e => {        
+    e.stopPropagation();
+    setHover(!hovered)
+    console.log(hovered);
+  }, [hovered])
   
   const { factor } = useSpring({ factor: hovered ? 1.1 : 1 })
   const { position } = useSpring({ position: hovered ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z], config: config.molasses })
@@ -77,8 +83,9 @@ export function Image({ url, opacity, scale, startPosition, ...props }) {
       //   return [vec.x, vec.y, vec.z]
       // })}
       position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
-
-      onPointerOver={hover} onPointerOut={unhover} scale={factor.interpolate(f => [scale * f, scale * f, 1])}>
+      onPointerDown={toggle}
+      // onPointerOver={hover} onPointerOut={unhover} 
+      scale={factor.interpolate(f => [scale * f, scale * f, 1])}>
       {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
       <planeGeometry attach="geometry" args={[1, 1, 1]} />
       {/* <a.meshBasicMaterial attach="material" args={texture} /> */}

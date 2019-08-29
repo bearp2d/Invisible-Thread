@@ -85,7 +85,7 @@ function Scene({ top, mouse }) {
     camera.position.x = 0;
     camera.position.z = 0;
 
-    if (pos < vh(1)) {
+    if (pos < vh(10)) {
       set({ rotation: 0 });
       // set({ rotation: -(pos / (vh(100) * 0.9)) });
     } else {
@@ -96,7 +96,7 @@ function Scene({ top, mouse }) {
     // } else {
     // camera.rotation.x = THREE.Math.degToRad(-90);
     // }
-    if (pos < vh(1)) {
+    if (pos < vh(10)) {
       camera.position.y = 0;
     } else {
       camera.position.y = -((pos / vh(1) * 0.5));
