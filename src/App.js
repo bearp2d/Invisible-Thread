@@ -35,16 +35,16 @@ applyThree({ EffectComposer, RenderPass, GlitchPass, WaterPass })
 function App() {
   const [{ top, mouse }, set] = useSpring(() => ({ top: 0, mouse: [0, 0] }));
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
-  const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
+  // const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
   cam.position.z = 0;
 
-  const [y] = useYScroll([0, 2400], { domTarget: window })
+  const {y, setLock, setY} = useYScroll([0, 2400], { domTarget: window })
 
   return (
     <>
       <Canvas className="canvas" camera={cam} onMouseMove={onMouseMove}>
-        <Scene top={y} mouse={mouse} />
+        <Scene top={y} mouse={mouse} setY={setY} />
       </Canvas>
       <aDom.div className="bar" style={{ height: y.interpolate([0, 2400], ['0%', '100%']) }} />
 
@@ -66,19 +66,25 @@ function App() {
 export default App;
 
 
-function Scene({ top, mouse }) {
+function Scene({ top, mouse, setY, setLock }) {
   const { size } = useThree()
   const scrollMax = size.height * 4.5
-
   const { camera } = useThree();
-
   const [{ rotation }, set] = useSpring(() => ({ rotation: 0, config: config.slow }));
-
   // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});
-  useEffect(() => {
-    // newScene(camera);
-  }, [])
+  
 
+  const [snapped, setSnapped] = useState(false);
+
+
+  const snap = useCallback((snapTo, y) => {        
+    if (snapTo) {
+      setY(-((y * vh(1) / 0.5)));
+      setSnapped(true);
+    } else {
+      setSnapped(false);
+    }
+  }, [setY])
 
   useRender(() => {
     const pos = top.getValue();
@@ -106,10 +112,7 @@ function Scene({ top, mouse }) {
       (mousePos[0] * 10) / 50000 - camera.position.x,
       0,
       (mousePos[1] * 10) / 50000 - camera.position.z)
-
-
     camera.position.lerp(cameraOffset, 0.8);
-
   })
 
   return (
@@ -119,7 +122,7 @@ function Scene({ top, mouse }) {
       <Logo top={top} />
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
-      <Images top={top} mouse={mouse} scrollMax={scrollMax} />
+      <Images top={top} mouse={mouse} scrollMax={scrollMax} snap={snap} />
       {/* <Thing /> */}
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
       {/* <ContactForm /> */}

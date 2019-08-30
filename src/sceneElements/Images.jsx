@@ -7,13 +7,14 @@ import { GetRandom } from './HelperFuncitons'
 import { useRender } from 'react-three-fiber';
 
 //Image object
-export function Images({ top, mouse, scrollMax }) {
+export function Images({ top, mouse, scrollMax, snap }) {
   //Load images from data.js  
 
 
   const imageList = useMemo( () => data.map( ([url, animation], i) => {
 
     const texture = new THREE.TextureLoader().load(url);
+    // texture.minFilter = THREE.LinearFilter;
     // const {naturalWidth, naturalHeight} = texture.image;    
     // let x = i % 2 == 0 ? 1 : -1;
 
@@ -24,15 +25,15 @@ export function Images({ top, mouse, scrollMax }) {
     let z = radius * Math.cos(degree);
 
     let startPosition = [x, y, z]
-    return [url, animation, startPosition, texture];
+    return [animation, startPosition, texture];
   }), [data])
 
 
-  return imageList.map(([url, animation, [x, y, z], texture], index) => (
+  return imageList.map(([animation, [x, y, z], texture], index) => (
     <Image
+      snap={snap}
       rotation={new THREE.Euler(THREE.Math.degToRad(-90))}
       key={index}
-      url={url}
       texture={texture}
       // opacity={top.interpolate([0, 500], [0, 1])}
       opacity={1}
@@ -42,7 +43,7 @@ export function Images({ top, mouse, scrollMax }) {
 }
 
 /** This component loads an image and projects it onto a plane */
-export function Image({ url, opacity, startPosition, texture, ...props }) {
+export function Image({ url, opacity, startPosition, texture, snap, ...props }) {
 
   const [sx, sy] = useMemo( () => {
     if (texture.image) {
@@ -76,10 +77,14 @@ export function Image({ url, opacity, startPosition, texture, ...props }) {
   }, [])
 
   const toggle = useCallback(e => {
-    e.stopPropagation();
-    setHover(!hovered)
-    console.log(hovered);
-  }, [hovered])
+    e.stopPropagation();    
+    if (!hovered) {
+      snap(true, startPosition.y + 0.5);
+    } else {
+      snap(false, 0);
+    }
+    setHover(!hovered)        
+  }, [hovered, snap])
 
   const { factor } = useSpring({ factor: hovered ? 2.0 : 1 })
   const { position } = useSpring({ position: hovered ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z], config: config.molasses })
@@ -88,7 +93,7 @@ export function Image({ url, opacity, startPosition, texture, ...props }) {
     <a.mesh {...props}
       position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
       onPointerDown={toggle}
-      // onPointerOver={hover} onPointerOut={unhover} 
+      // onPointerOver={hover} onPointerOut={unhover}
       scale={factor.interpolate(f => [sx * f, sy * f, 1])}>
       {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
       <planeGeometry attach="geometry" args={[1, 1, 1]} />

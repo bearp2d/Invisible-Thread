@@ -1,33 +1,33 @@
-import img1 from './images/accelerate.jpg'
-import img2 from './images/bloody1.png'
-import img3 from './images/crop-1.jpg'
-import img4 from './images/DEVELOPER_2.jpg'
-import img5 from './images/EDUCATION_1.jpg'
-import img6 from './images/experience.jpg'
-import img7 from './images/HoloLens2_Education2.jpg'
-import img8 from './images/HoloLens2_Healthcare2.jpg'
-import img9 from './images/manufacturing.jpg'
-import img10 from './images/RETAIL.jpg'
-import img11 from './images/ScreenSho3.png'
-import img12 from './images/abstract_1.jpg'
-import img13 from './images/abstract_2.jpg'
-import img14 from './images/abstract_3.jpg'
+import img1 from './images/resizes/accelerate.jpg'
+import img2 from './images/resizes/bloody1.jpg'
+import img3 from './images/resizes/crop-1.jpg'
+import img4 from './images/resizes/DEVELOPER_2.jpg'
+import img5 from './images/resizes/EDUCATION_1.jpg'
+import img6 from './images/resizes/experience.jpg'
+import img7 from './images/resizes/HoloLens2_Education2.jpg'
+import img8 from './images/resizes/HoloLens2_Healthcare2.jpg'
+import img9 from './images/resizes/manufacturing.jpg'
+import img10 from './images/resizes/RETAIL.jpg'
+import img11 from './images/resizes/ScreenSho3.jpg'
+import img12 from './images/resizes/abstract_1.jpg'
+import img13 from './images/resizes/abstract_2.jpg'
+import img14 from './images/resizes/abstract_3.jpg'
 
 export default [
-  [img1, 'swipe', 1.5],
-  [img4, 'swipe', 1],
-  [img2, 'swipe', .8],
-  [img3, 'swipe', 1],
+  [img1, 'swipe'],
+  [img4, 'swipe'],
+  [img2, 'swipe'],
+  [img3, 'swipe'],
   
-  [img5, 'swipe', 1],
-  [img6, 'swipe', 1],
+  [img5, 'swipe'],
+  [img6, 'swipe'],
   
-  [img7, 'swipe', 1],
-  [img8, 'swipe', 1],
-  [img9, 'swipe', 1],
-  [img10, 'swipe', 1],
-  [img11, 'swipe', 1],
-  [img12, 'swipe', 1],
-  [img13, 'swipe', 1],
-  [img14, 'swipe', 1],
+  [img7, 'swipe'],
+  [img8, 'swipe'],
+  [img9, 'swipe'],
+  [img10, 'swipe'],
+  [img11, 'swipe'],
+  [img12, 'swipe'],
+  [img13, 'swipe'],
+  [img14, 'swipe'],
 ]
