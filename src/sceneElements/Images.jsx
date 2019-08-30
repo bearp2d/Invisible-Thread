@@ -45,17 +45,6 @@ export function Image({ url, opacity, scale, startPosition, ...props }) {
   // let video = document.getElementById('video1');
   // video.play();
   // const texture = useMemo(() => new THREE.VideoTexture(video))
-  // const x = new BoxBufferGeometry(1, 1, 1)
-
-
-  // useRender(() => {
-  //   if (hovered) {
-  //     setPosition(position.lerp(new Vector3(), 0.1))      
-  //   } else {
-  //     setPosition(position.lerp(startPosition, 0.1))      
-  //   }
-  // });
-
 
   const [hovered, setHover] = useState(false)  
 
@@ -66,22 +55,18 @@ export function Image({ url, opacity, scale, startPosition, ...props }) {
   const unhover = useCallback(e => {
     setHover(false)
   }, [])
+  
   const toggle = useCallback(e => {        
     e.stopPropagation();
     setHover(!hovered)
     console.log(hovered);
   }, [hovered])
   
-  const { factor } = useSpring({ factor: hovered ? 1.1 : 1 })
+  const { factor } = useSpring({ factor: hovered ? 2.0 : 1 })
   const { position } = useSpring({ position: hovered ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z], config: config.molasses })
 
   return (
     <a.mesh {...props}
-      // position={position.interpolate(e => [e[0], e[1], e[2]])} 
-      // position={position.interpolate((x, y, z) => {
-      //   let vec = new Vector3(x, y, z).lerp(new Vector3(), 0.001);
-      //   return [vec.x, vec.y, vec.z]
-      // })}
       position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
       onPointerDown={toggle}
       // onPointerOver={hover} onPointerOut={unhover} 

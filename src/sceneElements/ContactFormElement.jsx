@@ -9,7 +9,7 @@ export default function ContactFormElement() {
 
         <div className="nav">
           {/* <a href="#" className="menu-activator"><i className="ion-ios-more"></i></a>*/}
-          <img src={logoPngBlk} style={{ width: '250px' }} />
+          {/* <img src={logoPngBlk} style={{ width: '250px' }} /> */}
           {/* <a href="#" className="white link"><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>*/}
         </div>
         <div className="container">

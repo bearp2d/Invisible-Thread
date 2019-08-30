@@ -11,7 +11,7 @@ import Stars from './sceneElements/Stars'
 import heart from './images/heart.mp4'
 import video1 from './images/small/video1.mp4'
 import video2 from './images/small/video2.mp4'
-import logo from './images/thisSVG.svg'
+import Logo from './sceneElements/Logo'
 
 import ContactFormElement from './sceneElements/ContactFormElement'
 
@@ -38,7 +38,7 @@ function App() {
   const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
   cam.position.z = 0;
-    
+
   const [y] = useYScroll([0, 2400], { domTarget: window })
 
   return (
@@ -49,7 +49,7 @@ function App() {
       <aDom.div className="bar" style={{ height: y.interpolate([0, 2400], ['0%', '100%']) }} />
 
       <ContactFormElement />
-      
+
       <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
         <source src={heart} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
       </video>
@@ -58,7 +58,7 @@ function App() {
       </video>
       <video id="video3" loop crossOrigin="anonymous" style={{ display: 'none' }}>
         <source src={video2} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-      </video>    
+      </video>
     </>
   );
 }
@@ -116,6 +116,7 @@ function Scene({ top, mouse }) {
     <>
       {/* <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
       <a.pointLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
+      <Logo top={top} />
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
       <Images top={top} mouse={mouse} scrollMax={scrollMax} />
@@ -133,22 +134,11 @@ function Scene({ top, mouse }) {
 }
 
 
+
+
 function vh(value) {
   return (window.innerHeight / 100) * value
 }
-
-const Banner = () => {
-  return <div className="contact-us">
-    <h1>Contact Us</h1>
-    <input />
-    <input />
-    <input />
-    <input />
-    <button>Send</button>
-  </div>
-}
-
-
 
 // /** This component creates a glitch effect */
 const Effects = React.memo(({ factor }) => {
