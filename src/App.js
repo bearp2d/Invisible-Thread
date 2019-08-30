@@ -72,7 +72,7 @@ function Scene({ top, mouse }) {
 
   const { camera } = useThree();
 
-  const [{ rotation }, set] = useSpring(() => ({ rotation: 0, config: config.molasses }));
+  const [{ rotation }, set] = useSpring(() => ({ rotation: 0, config: config.slow }));
 
   // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});
   useEffect(() => {
@@ -85,7 +85,7 @@ function Scene({ top, mouse }) {
     camera.position.x = 0;
     camera.position.z = 0;
 
-    if (pos < vh(10)) {
+    if (pos < vh(2)) {
       set({ rotation: 0 });
       // set({ rotation: -(pos / (vh(100) * 0.9)) });
     } else {
@@ -96,7 +96,7 @@ function Scene({ top, mouse }) {
     // } else {
     // camera.rotation.x = THREE.Math.degToRad(-90);
     // }
-    if (pos < vh(10)) {
+    if (pos < vh(2)) {
       camera.position.y = 0;
     } else {
       camera.position.y = -((pos / vh(1) * 0.5));

@@ -10,8 +10,12 @@ import { useRender } from 'react-three-fiber';
 export function Images({ top, mouse, scrollMax }) {
   //Load images from data.js  
 
-  const imageList = useMemo(() => data.map(([url, animation], i) => {
-    // let x = i % 2 == 0 ? 1 : -1;    
+
+  const imageList = useMemo( () => data.map( ([url, animation], i) => {
+
+    const texture = new THREE.TextureLoader().load(url);
+    // const {naturalWidth, naturalHeight} = texture.image;    
+    // let x = i % 2 == 0 ? 1 : -1;
 
     let degree = GetRandom(0, 360);
     let radius = 2;
@@ -20,16 +24,16 @@ export function Images({ top, mouse, scrollMax }) {
     let z = radius * Math.cos(degree);
 
     let startPosition = [x, y, z]
-    return [url, animation, startPosition, 10];
+    return [url, animation, startPosition, texture];
   }), [data])
 
 
-  return imageList.map(([url, animation, [x, y, z], factor], index) => (
+  return imageList.map(([url, animation, [x, y, z], texture], index) => (
     <Image
       rotation={new THREE.Euler(THREE.Math.degToRad(-90))}
       key={index}
       url={url}
-      scale={1}
+      texture={texture}
       // opacity={top.interpolate([0, 500], [0, 1])}
       opacity={1}
       startPosition={new Vector3(x, y, z)}
@@ -38,15 +42,30 @@ export function Images({ top, mouse, scrollMax }) {
 }
 
 /** This component loads an image and projects it onto a plane */
-export function Image({ url, opacity, scale, startPosition, ...props }) {
-  const texture = useMemo(() => new THREE.TextureLoader().load(url), [url])
+export function Image({ url, opacity, startPosition, texture, ...props }) {
+
+  const [sx, sy] = useMemo( () => {
+    if (texture.image) {
+      const {naturalWidth, naturalHeight} = texture.image;      
+      return getScale([naturalWidth, naturalHeight]);    
+    } else {
+      return [1, 1];
+    }
+  }, [texture.image])
+
+  // console.log(texture);
+  // const {naturalWidth, naturalHeight} = texture.image;
+  // const [sx, sy] = getScale([naturalWidth, naturalHeight]);
+  // const [sx, sy] = [1, 1];
+
+
   // const texture = useMemo(() => new THREE.MeshBasicMaterial({ color: new THREE.Color('green'), transparent: true }));  
 
   // let video = document.getElementById('video1');
   // video.play();
   // const texture = useMemo(() => new THREE.VideoTexture(video))
 
-  const [hovered, setHover] = useState(false)  
+  const [hovered, setHover] = useState(false)
 
   const hover = useCallback(e => {
     e.stopPropagation();
@@ -55,13 +74,13 @@ export function Image({ url, opacity, scale, startPosition, ...props }) {
   const unhover = useCallback(e => {
     setHover(false)
   }, [])
-  
-  const toggle = useCallback(e => {        
+
+  const toggle = useCallback(e => {
     e.stopPropagation();
     setHover(!hovered)
     console.log(hovered);
   }, [hovered])
-  
+
   const { factor } = useSpring({ factor: hovered ? 2.0 : 1 })
   const { position } = useSpring({ position: hovered ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z], config: config.molasses })
 
@@ -70,7 +89,7 @@ export function Image({ url, opacity, scale, startPosition, ...props }) {
       position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
       onPointerDown={toggle}
       // onPointerOver={hover} onPointerOut={unhover} 
-      scale={factor.interpolate(f => [scale * f, scale * f, 1])}>
+      scale={factor.interpolate(f => [sx * f, sy * f, 1])}>
       {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
       <planeGeometry attach="geometry" args={[1, 1, 1]} />
       {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
@@ -79,4 +98,12 @@ export function Image({ url, opacity, scale, startPosition, ...props }) {
       </a.meshLambertMaterial>
     </a.mesh>
   )
+}
+
+const getScale = ([x, y]) => {     
+  if (x > y) {
+    return [1, y / x]
+  } else {
+    return [x / y, 1]
+  }
 }
