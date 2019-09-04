@@ -14,6 +14,21 @@ function vh(value) {
 export function Images({ top, mouse, scrollMax, snap }) {
   //Load images from data.js  
 
+  const [selected, setSelected] = useState(-1);
+
+  const selectImage = (key, y) => {
+    console.log('Changed to ' + key);
+    
+    setSelected(key);
+    if (key > -1) {
+      snap(true, y)
+    } else {
+      snap(false)
+    }
+    
+  }
+
+
 
   const imageList = useMemo( () => data.map( ([url, animation], i) => {
 
@@ -25,7 +40,7 @@ export function Images({ top, mouse, scrollMax, snap }) {
     let degree = GetRandom(0, 360);
     let radius = 2;
     let x = radius * Math.sin(degree);
-    let y = -10 - (i * 10);
+    let y = -8 - (i * 4);
     let z = radius * Math.cos(degree);
 
     // let x = 0;
@@ -41,7 +56,10 @@ export function Images({ top, mouse, scrollMax, snap }) {
       snap={snap}
       rotation={new THREE.Euler(THREE.Math.degToRad(-90))}
       key={index}
+      index={index}
       texture={texture}
+      selected={selected}
+      selectImage={selectImage}
       // opacity={top.interpolate([0, 500], [0, 1])}
       opacity={1}
       startPosition={new Vector3(x, y, z)}
@@ -50,7 +68,7 @@ export function Images({ top, mouse, scrollMax, snap }) {
 }
 
 /** This component loads an image and projects it onto a plane */
-export function Image({ url, opacity, startPosition, texture, snap, ...props }) {
+export function Image({ url, opacity, startPosition, texture, selected, selectImage, index, ...props }) {
 
   const [sx, sy] = useMemo( () => {
     // if (texture.image) {
@@ -84,26 +102,32 @@ export function Image({ url, opacity, startPosition, texture, snap, ...props }) 
     setHover(false)
   }, [])
 
-  const toggle = useCallback(e => {
-    e.stopPropagation();    
-    if (!hovered) {
-      snap(true, startPosition.y);
-      // -((pos / vh(1) * 0.5))
+  const toggle = e => {
+    e.stopPropagation();
+    console.log('Selected ' + index);
+    
+    if (selected === index) {
+      selectImage(-1, 0)
     } else {
-      snap(false, 0);
+      selectImage(index, startPosition.y)      
     }
-    setHover(!hovered)        
-  }, [hovered, snap])
-
-  const { factor } = useSpring({ factor: hovered ? 1.0 : 1 })
-  const { position } = useSpring({ position: hovered ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z] })
+    setHover(!hovered)
+  }
+  
+  const { position } = useSpring({ position: selected === index ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z], 
+    config: {       
+      tension: 100,
+      friction: 40,
+      mass: 1,
+      // velocity: 5
+    } })
 
   return (
     <a.mesh {...props}
       position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
-      onPointerDown={toggle}
+      onPointerUp={toggle}      
       // onPointerOver={hover} onPointerOut={unhover}
-      scale={factor.interpolate(f => [sx * f, sy * f, 1])}>
+      scale={[1, 1, 1]}>
       {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
       <planeGeometry attach="geometry" args={[1, 1, 1]} />
       {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
@@ -112,12 +136,4 @@ export function Image({ url, opacity, startPosition, texture, snap, ...props }) 
       </a.meshLambertMaterial>
     </a.mesh>
   )
-}
-
-const getScale = ([x, y]) => {     
-  if (x > y) {
-    return [1, y / x]
-  } else {
-    return [x / y, 1]
-  }
 }

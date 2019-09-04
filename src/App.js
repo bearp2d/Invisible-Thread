@@ -39,14 +39,14 @@ function App() {
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
   cam.position.z = 0;
 
-  const { y, setLock, setY } = useYScroll([0, 2400], { domTarget: window })
+  const { y, setLock, setY } = useYScroll([0, 200], { domTarget: window })
 
   return (
     <>
       <Canvas className="canvas" camera={cam} onMouseMove={onMouseMove}>
         <Scene top={y} mouse={mouse} setY={setY} setLock={setLock} />
       </Canvas>
-      <aDom.div className="bar" style={{ height: y.interpolate([0, 2400], ['0%', '100%']) }} />
+      <aDom.div className="bar" style={{ height: y.interpolate([0, 200], ['0%', '100%']) }} />
 
       <ContactFormElement />
 
@@ -79,9 +79,10 @@ function Scene({ top, mouse, setY, setLock }) {
 
   const snap = useCallback((snapTo, y) => {
     if (snapTo) {
-      setY(-( y+ 1.5 ));
+      setY(-( y + 1.5 ));
       setSnapped(true);
     } else {
+      setY(top.getValue() - 2);
       setSnapped(false);
     }
   }, [setY])
@@ -117,9 +118,9 @@ function Scene({ top, mouse, setY, setLock }) {
     const mousePos = mouse.getValue();
     let cameraOffset = new THREE.Vector3(
       (mousePos[0] * 10) / 50000 - camera.position.x,
-      0,
+      camera.position.y,
       (mousePos[1] * 10) / 50000 - camera.position.z)
-    // camera.position.lerp(cameraOffset, 0.8);    
+    camera.position.lerp(cameraOffset, 0.8);
   })
 
   return (
