@@ -6,6 +6,10 @@ import { Mesh, Vector3, Material, BufferGeometry, BoxBufferGeometry } from 'thre
 import { GetRandom } from './HelperFuncitons'
 import { useRender } from 'react-three-fiber';
 
+function vh(value) {
+  return (window.innerHeight / 100) * value
+}
+
 //Image object
 export function Images({ top, mouse, scrollMax, snap }) {
   //Load images from data.js  
@@ -21,13 +25,16 @@ export function Images({ top, mouse, scrollMax, snap }) {
     let degree = GetRandom(0, 360);
     let radius = 2;
     let x = radius * Math.sin(degree);
-    let y = -8 - (i * 4);
+    let y = -10 - (i * 10);
     let z = radius * Math.cos(degree);
 
-    let startPosition = [x, y, z]
-    return [animation, startPosition, texture];
-  }), [data])
+    // let x = 0;
+    // let z = 0;
+    // let y = -1.5;
 
+    let startPosition = [x, y, z]        
+    return [animation, startPosition, texture];
+  }), [data])  
 
   return imageList.map(([animation, [x, y, z], texture], index) => (
     <Image
@@ -46,12 +53,13 @@ export function Images({ top, mouse, scrollMax, snap }) {
 export function Image({ url, opacity, startPosition, texture, snap, ...props }) {
 
   const [sx, sy] = useMemo( () => {
-    if (texture.image) {
-      const {naturalWidth, naturalHeight} = texture.image;      
-      return getScale([naturalWidth, naturalHeight]);    
-    } else {
-      return [1, 1];
-    }
+    // if (texture.image) {
+    //   const {naturalWidth, naturalHeight} = texture.image;      
+    //   return getScale([naturalWidth, naturalHeight]);    
+    // } else {
+    //   return [10, 10];
+    // }
+    return [1, 1];
   }, [texture.image])
 
   // console.log(texture);
@@ -79,15 +87,16 @@ export function Image({ url, opacity, startPosition, texture, snap, ...props }) 
   const toggle = useCallback(e => {
     e.stopPropagation();    
     if (!hovered) {
-      snap(true, startPosition.y + 0.5);
+      snap(true, startPosition.y);
+      // -((pos / vh(1) * 0.5))
     } else {
       snap(false, 0);
     }
     setHover(!hovered)        
   }, [hovered, snap])
 
-  const { factor } = useSpring({ factor: hovered ? 2.0 : 1 })
-  const { position } = useSpring({ position: hovered ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z], config: config.molasses })
+  const { factor } = useSpring({ factor: hovered ? 1.0 : 1 })
+  const { position } = useSpring({ position: hovered ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z] })
 
   return (
     <a.mesh {...props}

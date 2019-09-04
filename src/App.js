@@ -39,12 +39,12 @@ function App() {
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
   cam.position.z = 0;
 
-  const {y, setLock, setY} = useYScroll([0, 2400], { domTarget: window })
+  const { y, setLock, setY } = useYScroll([0, 2400], { domTarget: window })
 
   return (
     <>
       <Canvas className="canvas" camera={cam} onMouseMove={onMouseMove}>
-        <Scene top={y} mouse={mouse} setY={setY} />
+        <Scene top={y} mouse={mouse} setY={setY} setLock={setLock} />
       </Canvas>
       <aDom.div className="bar" style={{ height: y.interpolate([0, 2400], ['0%', '100%']) }} />
 
@@ -72,14 +72,14 @@ function Scene({ top, mouse, setY, setLock }) {
   const { camera } = useThree();
   const [{ rotation }, set] = useSpring(() => ({ rotation: 0, config: config.slow }));
   // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});
-  
+
 
   const [snapped, setSnapped] = useState(false);
 
 
-  const snap = useCallback((snapTo, y) => {        
+  const snap = useCallback((snapTo, y) => {
     if (snapTo) {
-      setY(-((y * vh(1) / 0.5)));
+      setY(-( y+ 1.5 ));
       setSnapped(true);
     } else {
       setSnapped(false);
@@ -88,31 +88,38 @@ function Scene({ top, mouse, setY, setLock }) {
 
   useRender(() => {
     const pos = top.getValue();
+    const rotationValue = rotation.getValue();
     camera.position.x = 0;
     camera.position.z = 0;
 
-    if (pos < vh(2)) {
-      set({ rotation: 0 });
-      // set({ rotation: -(pos / (vh(100) * 0.9)) });
-    } else {
-      set({ rotation: -90 });
-    }
-    // camera.rotation.y = THREE.Math.degToRad(value.beta);
-    camera.rotation.x = THREE.Math.degToRad(rotation.getValue());
+    // if (pos < vh(2)) {
+    //   set({ rotation: 0 });
+    //   // set({ rotation: -(pos / (vh(100) * 0.9)) });
     // } else {
-    // camera.rotation.x = THREE.Math.degToRad(-90);
+    //   set({ rotation: -90 });
     // }
-    if (pos < vh(2)) {
-      camera.position.y = 0;
-    } else {
-      camera.position.y = -((pos / vh(1) * 0.5));
-    }
+    // camera.rotation.x = THREE.Math.degToRad(rotationValue);
+
+    // setLock((rotationValue > -90 && rotationValue < 0))
+
+
+    // if (pos < vh(2)) {
+    //   camera.position.y = 0;
+    // } else {
+    //   camera.position.y = -pos;
+    // }
+
+    camera.position.y = -pos;
+    camera.rotation.x = THREE.Math.degToRad(-90);
+
+
+    //Set mouse hover offset
     const mousePos = mouse.getValue();
     let cameraOffset = new THREE.Vector3(
       (mousePos[0] * 10) / 50000 - camera.position.x,
       0,
       (mousePos[1] * 10) / 50000 - camera.position.z)
-    camera.position.lerp(cameraOffset, 0.8);
+    // camera.position.lerp(cameraOffset, 0.8);    
   })
 
   return (
