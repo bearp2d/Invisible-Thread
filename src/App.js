@@ -79,7 +79,7 @@ function Scene({ top, mouse, setY, setLock }) {
 
   const snap = useCallback((snapTo, y) => {
     if (snapTo) {
-      setY(-( y + 1.5 ));
+      setY(-( y + 2.5 ));
       setSnapped(true);
     } else {
       setY(top.getValue() - 2);

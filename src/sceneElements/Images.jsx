@@ -16,21 +16,20 @@ export function Images({ top, mouse, scrollMax, snap }) {
 
   const [selected, setSelected] = useState(-1);
 
-  const selectImage = (key, y) => {
-    console.log('Changed to ' + key);
-    
+  const selectImage = (key, y) => {    
+
     setSelected(key);
     if (key > -1) {
       snap(true, y)
     } else {
       snap(false)
     }
-    
+
   }
 
 
 
-  const imageList = useMemo( () => data.map( ([url, animation], i) => {
+  const imageList = useMemo(() => data.map(([url, animation], i) => {
 
     const texture = new THREE.TextureLoader().load(url);
     // texture.minFilter = THREE.LinearFilter;
@@ -47,9 +46,9 @@ export function Images({ top, mouse, scrollMax, snap }) {
     // let z = 0;
     // let y = -1.5;
 
-    let startPosition = [x, y, z]        
+    let startPosition = [x, y, z]
     return [animation, startPosition, texture];
-  }), [data])  
+  }), [data])
 
   return imageList.map(([animation, [x, y, z], texture], index) => (
     <Image
@@ -70,14 +69,13 @@ export function Images({ top, mouse, scrollMax, snap }) {
 /** This component loads an image and projects it onto a plane */
 export function Image({ url, opacity, startPosition, texture, selected, selectImage, index, ...props }) {
 
-  const [sx, sy] = useMemo( () => {
-    // if (texture.image) {
-    //   const {naturalWidth, naturalHeight} = texture.image;      
-    //   return getScale([naturalWidth, naturalHeight]);    
-    // } else {
-    //   return [10, 10];
-    // }
-    return [1, 1];
+  const [sx, sy] = useMemo(() => {
+    if (texture.image) {
+      const { naturalWidth, naturalHeight } = texture.image;
+      return getScale([naturalWidth, naturalHeight]);
+    } else {
+      return [1, 1];
+    }
   }, [texture.image])
 
   // console.log(texture);
@@ -104,30 +102,30 @@ export function Image({ url, opacity, startPosition, texture, selected, selectIm
 
   const toggle = e => {
     e.stopPropagation();
-    console.log('Selected ' + index);
-    
     if (selected === index) {
       selectImage(-1, 0)
     } else {
-      selectImage(index, startPosition.y)      
+      selectImage(index, startPosition.y)
     }
     setHover(!hovered)
   }
-  
-  const { position } = useSpring({ position: selected === index ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z], 
-    config: {       
+
+  const { position } = useSpring({
+    position: selected === index ? [0, startPosition.y, 0] : [startPosition.x, startPosition.y, startPosition.z],
+    config: {
       tension: 100,
       friction: 40,
       mass: 1,
       // velocity: 5
-    } })
+    }
+  })
 
   return (
     <a.mesh {...props}
       position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
-      onPointerUp={toggle}      
+      onPointerUp={toggle}
       // onPointerOver={hover} onPointerOut={unhover}
-      scale={[1, 1, 1]}>
+      scale={[sx, sy, 1]}>
       {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
       <planeGeometry attach="geometry" args={[1, 1, 1]} />
       {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
@@ -136,4 +134,12 @@ export function Image({ url, opacity, startPosition, texture, selected, selectIm
       </a.meshLambertMaterial>
     </a.mesh>
   )
+}
+
+const getScale = ([x, y]) => {
+  if (x > y) {
+    return [1, y / x]
+  } else {
+    return [x / y, 1]
+  }
 }
