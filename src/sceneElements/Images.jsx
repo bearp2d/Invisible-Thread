@@ -35,7 +35,7 @@ export function Images({ top, mouse, scrollMax, snap }) {
     let degree = GetRandom(0, 360);
     let radius = 2;
     let x = radius * Math.sin(degree);
-    let y = -8 - (i * 4);
+    let y = -12 - (i * 4);
     let z = radius * Math.cos(degree);
 
     // let x = 0;

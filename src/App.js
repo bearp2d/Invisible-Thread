@@ -46,7 +46,7 @@ function App() {
       <Canvas className="canvas" camera={cam} onMouseMove={onMouseMove}>
         <Scene mouse={mouse} cameraControl={cameraControl} />
       </Canvas>
-      <aDom.div className="bar" style={{ height: cameraControl.y.interpolate([0, 200], ['0%', '100%']) }} />
+      <aDom.div className="bar" style={{ height: cameraControl.ySpring.interpolate([0, 200], ['0%', '100%']) }} />
 
       <ContactFormElement />
 
@@ -65,7 +65,7 @@ function App() {
 export default App;
 
 
-function Scene({ mouse, cameraControl: { y, setY, rotation, setRot } }) {
+function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScrollDown } }) {
   const { size } = useThree()
   const scrollMax = size.height * 4.5
   const { camera } = useThree();
@@ -80,21 +80,35 @@ function Scene({ mouse, cameraControl: { y, setY, rotation, setRot } }) {
       setY(-(newY + 2.5));
       setSnapped(true);
     } else {
-      setY(y.getValue() - 2);
+      setY(ySpring.getValue() - 2);
       setSnapped(false);
     }
   }, [setY])
 
   useRender(() => {
-    const pos = y.getValue();
+    const pos = ySpring.getValue();
     const rot = rotation.getValue();
 
-    if (pos > 1 && pos < 2) {
-      setRot(-90);
-      setY(2);
-    }
+    // if (pos > 1 && pos < 2) {
+    //   setRot(-90);
+    //   setY(2);
+    // }
 
-    console.log(rot, pos);
+    // console.log(rot, pos);
+    
+
+    setScrollDown();
+
+    // if (pos < 0.5) {
+    //   setScrollDown(true);
+    // } else if (pos > 4.5) {
+    //   setScrollDown(false);
+    // }
+
+    // if (pos > 1 && pos < 5) {
+    //   if ()
+    //   setScrollDown(true);
+    // }
 
     camera.rotation.x = THREE.Math.degToRad(rot);;
     camera.position.y = -pos;
@@ -114,11 +128,11 @@ function Scene({ mouse, cameraControl: { y, setY, rotation, setRot } }) {
     <>
       {/* <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
       <a.pointLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
-      <Logo top={y} />
+      <Logo top={ySpring} />
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Stars position={y.interpolate(top => [0, -1 + top / 20, 0])} /> */}
 
-      <Images top={y} mouse={mouse} scrollMax={scrollMax} snap={snap} />
+      <Images top={ySpring} mouse={mouse} scrollMax={scrollMax} snap={snap} />
       <Stars position={[0, 0, 0]} />
       {/* <Thing /> */}
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
