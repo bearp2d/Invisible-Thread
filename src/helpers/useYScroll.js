@@ -9,7 +9,6 @@ export default function useYScroll(bounds, props) {
   const [{ ySpring }, setYSpring] = useSpring(() => ({ ySpring: 0, config: config.molasses }));
   const [{ rotation }, setRotationSpring] = useSpring(() => ({ rotation: 0, config: {
     friction: 120
-
   }}));
   let scroll = 0;
   let last = 0;
@@ -28,7 +27,7 @@ export default function useYScroll(bounds, props) {
 
   const fn = ({ xy: [, cy], previous: [, py], memo = ySpring.getValue() }) => {    
     if (!lock) {
-      scroll = clamp(memo + (cy - py) * 0.1, ...bounds)
+      scroll = clamp(memo + (cy - py) * 0.05, ...bounds)
       if (startDragPos && Math.abs(startDragPos - cy) > 1) {
         setYSpring({ ySpring: scroll })
       }
@@ -38,7 +37,7 @@ export default function useYScroll(bounds, props) {
 
   const fn2 = ({ xy: [, y] }) => {    
     if (!lock) {
-      scroll = clamp(scroll + (y - last) * 0.1, ...bounds)
+      scroll = clamp(scroll + (y - last) * 0.05, ...bounds)
       setYSpring({ ySpring: scroll })
     }
     last = y;
@@ -46,7 +45,7 @@ export default function useYScroll(bounds, props) {
 
   const setY = e => {
     scroll = e;
-    setYSpring({ y: e });
+    setYSpring({ ySpring: e });
   }
 
   const setRot = e => {
@@ -58,10 +57,10 @@ export default function useYScroll(bounds, props) {
     const max = 5
     if (pos > 1 && pos < max) {
       if (moveUp) {
-        setYSpring({ ySpring: 0 })
+        setY(0)
         setRotationSpring({ rotation: 0 })
       } else {
-        setYSpring({ ySpring: max + max * 0.1 })
+        setY(max + max * 0.1)
         setRotationSpring({ rotation: -90 })
       }
     }

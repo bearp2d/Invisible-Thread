@@ -50,7 +50,7 @@ function App() {
 
       <ContactFormElement />
 
-      <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
+      {/* <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
         <source src={heart} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
       </video>
       <video id="video2" loop crossOrigin="anonymous" style={{ display: 'none' }}>
@@ -58,7 +58,7 @@ function App() {
       </video>
       <video id="video3" loop crossOrigin="anonymous" style={{ display: 'none' }}>
         <source src={video2} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-      </video>
+      </video> */}
     </>
   );
 }

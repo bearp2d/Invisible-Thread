@@ -1,4 +1,4 @@
-import img1 from './images/resizes/accelerate.jpg'
+import img1 from './images/resizes/accelerate2.webp'
 import img2 from './images/resizes/bloody1.jpg'
 import img3 from './images/resizes/crop-1.jpg'
 import img4 from './images/resizes/DEVELOPER_2.jpg'
