@@ -6,10 +6,6 @@ import { Mesh, Vector3, Material, BufferGeometry, BoxBufferGeometry } from 'thre
 import { GetRandom } from './HelperFuncitons'
 import { useRender } from 'react-three-fiber';
 
-function vh(value) {
-  return (window.innerHeight / 100) * value
-}
-
 //Image object
 export function Images({ top, mouse, scrollMax, snap }) {
   //Load images from data.js  

@@ -39,14 +39,14 @@ function App() {
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
   cam.position.z = 0;
 
-  const { y, setLock, setY } = useYScroll([0, 200], { domTarget: window })
+  const cameraControl = useYScroll([0, 200], { domTarget: window })
 
   return (
     <>
       <Canvas className="canvas" camera={cam} onMouseMove={onMouseMove}>
-        <Scene top={y} mouse={mouse} setY={setY} setLock={setLock} />
+        <Scene mouse={mouse} cameraControl={cameraControl} />
       </Canvas>
-      <aDom.div className="bar" style={{ height: y.interpolate([0, 200], ['0%', '100%']) }} />
+      <aDom.div className="bar" style={{ height: cameraControl.y.interpolate([0, 200], ['0%', '100%']) }} />
 
       <ContactFormElement />
 
@@ -62,57 +62,44 @@ function App() {
     </>
   );
 }
-
 export default App;
 
 
-function Scene({ top, mouse, setY, setLock }) {
+function Scene({ mouse, cameraControl: { y, setY, rotation, setRot } }) {
   const { size } = useThree()
   const scrollMax = size.height * 4.5
   const { camera } = useThree();
-  const [{ rotation }, set] = useSpring(() => ({ rotation: 0, config: config.slow }));
   // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});
 
 
   const [snapped, setSnapped] = useState(false);
 
 
-  const snap = useCallback((snapTo, y) => {
+  const snap = useCallback((snapTo, newY) => {
     if (snapTo) {
-      setY(-( y + 2.5 ));
+      setY(-(newY + 2.5));
       setSnapped(true);
     } else {
-      setY(top.getValue() - 2);
+      setY(y.getValue() - 2);
       setSnapped(false);
     }
   }, [setY])
 
   useRender(() => {
-    const pos = top.getValue();
-    const rotationValue = rotation.getValue();
+    const pos = y.getValue();
+    const rot = rotation.getValue();
+
+    if (pos > 1 && pos < 2) {
+      setRot(-90);
+      setY(2);
+    }
+
+    console.log(rot, pos);
+
+    camera.rotation.x = THREE.Math.degToRad(rot);;
+    camera.position.y = -pos;
     camera.position.x = 0;
     camera.position.z = 0;
-
-    // if (pos < vh(2)) {
-    //   set({ rotation: 0 });
-    //   // set({ rotation: -(pos / (vh(100) * 0.9)) });
-    // } else {
-    //   set({ rotation: -90 });
-    // }
-    // camera.rotation.x = THREE.Math.degToRad(rotationValue);
-
-    // setLock((rotationValue > -90 && rotationValue < 0))
-
-
-    // if (pos < vh(2)) {
-    //   camera.position.y = 0;
-    // } else {
-    //   camera.position.y = -pos;
-    // }
-
-    camera.position.y = -pos;
-    camera.rotation.x = THREE.Math.degToRad(-90);
-
 
     //Set mouse hover offset
     const mousePos = mouse.getValue();
@@ -127,10 +114,12 @@ function Scene({ top, mouse, setY, setLock }) {
     <>
       {/* <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
       <a.pointLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
-      <Logo top={top} />
+      <Logo top={y} />
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
-      {/* <Stars position={top.interpolate(top => [0, -1 + top / 20, 0])} /> */}
-      <Images top={top} mouse={mouse} scrollMax={scrollMax} snap={snap} />
+      {/* <Stars position={y.interpolate(top => [0, -1 + top / 20, 0])} /> */}
+
+      <Images top={y} mouse={mouse} scrollMax={scrollMax} snap={snap} />
+      <Stars position={[0, 0, 0]} />
       {/* <Thing /> */}
       {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
       {/* <ContactForm /> */}
@@ -144,12 +133,6 @@ function Scene({ top, mouse, setY, setLock }) {
   )
 }
 
-
-
-
-function vh(value) {
-  return (window.innerHeight / 100) * value
-}
 
 // /** This component creates a glitch effect */
 const Effects = React.memo(({ factor }) => {
