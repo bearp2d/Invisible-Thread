@@ -37,7 +37,7 @@ function App() {
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
   // const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
-  cam.position.z = 0;
+  cam.position.z = -5;
 
   const cameraControl = useYScroll([0, 200], { domTarget: window })
 
@@ -66,9 +66,14 @@ export default App;
 
 
 function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScrollDown } }) {
-  const { size } = useThree()
-  const scrollMax = size.height * 4.5
-  const { camera } = useThree();
+
+  const { viewport } = useThree();  
+  console.log(viewport.height);
+  console.log(viewport.width);
+
+
+  const { size, camera } = useThree()
+  const scrollMax = size.height * 4.5  
   // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});
 
 
@@ -113,7 +118,7 @@ function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScr
     camera.rotation.x = THREE.Math.degToRad(rot);;
     camera.position.y = -pos;
     camera.position.x = 0;
-    camera.position.z = 0;
+    camera.position.z = 5;
 
     //Set mouse hover offset
     const mousePos = mouse.getValue();
@@ -121,7 +126,9 @@ function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScr
       (mousePos[0] * 10) / 50000 - camera.position.x,
       camera.position.y,
       (mousePos[1] * 10) / 50000 - camera.position.z)
-    camera.position.lerp(cameraOffset, 0.8);
+      if (pos > 1) {
+        camera.position.lerp(cameraOffset, 0.8);
+      }
   })
 
   return (
@@ -133,9 +140,9 @@ function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScr
       {/* <Stars position={y.interpolate(top => [0, -1 + top / 20, 0])} /> */}
 
       <Images top={ySpring} mouse={mouse} scrollMax={scrollMax} snap={snap} />
-      <Stars position={[0, 0, 0]} />
+      {/* <Stars position={[0, 0, 0]} /> */}
       {/* <Thing /> */}
-      {/* <Background color={top.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
+      {/* <Background color={ySpring.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
       {/* <ContactForm /> */}
       {/* <Text opacity={1} fontSize={210} >
         Invisible Thread

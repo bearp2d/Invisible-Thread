@@ -32,9 +32,7 @@ export function Images({ top, mouse, scrollMax, snap }) {
     // texture.minFilter = THREE.LinearFilter;
     // const {naturalWidth, naturalHeight} = texture.image;    
     // let x = i % 2 == 0 ? 1 : -1;
-    
-    //270 down
-    // let degree = 0;
+            
     let spread = 20;
     if (left) {
       degree = GetRandom(0, spread) - spread / 2;
@@ -49,11 +47,7 @@ export function Images({ top, mouse, scrollMax, snap }) {
     let x = radius * Math.cos(rad);
     let y = -12 - (i * 4);
     let z = radius * Math.sin(rad);
-    
-    // let x = 0;
-    // let z = 0;
-    // let y = -1.5;
-
+        
     let startPosition = [x, y, z]
     return [animation, startPosition, texture];
   }), [data])

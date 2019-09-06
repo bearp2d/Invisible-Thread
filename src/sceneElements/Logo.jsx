@@ -1,25 +1,37 @@
 import * as THREE from 'three/src/Three'
-import React, {useMemo} from 'react'
+import React, { useMemo } from 'react'
 import { apply as applySpring, useSpring, a, interpolate, config } from 'react-spring/three'
+import { useThree } from 'react-three-fiber'
 // import { Vector3 } from 'three/src/Three';
-import { Image } from './Images'
+// import { Image } from './Images'
 // import logo from '../images/thisSVG.svg'
-import logoPngBlk from '../images/logo_black.png'
-
-let Logo = () => {
+import logoPngBlk from '../images/ToResize/logo_whiteVSmall.webp'
+const Logo = () => {
+  const { viewport } = useThree();
   const texture = useMemo(() => new THREE.TextureLoader().load(logoPngBlk), [logoPngBlk])
 
   return (
-    <a.mesh
-      position={[0, 0, -5]}      
-      scale={[2, 1, 1]}>
-      {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
-      <planeGeometry attach="geometry" args={[1, 1, 1]} />
-      {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
-      <a.meshLambertMaterial attach="material" transparent opacity={1}>
-        <primitive attach="map" object={texture} />
-      </a.meshLambertMaterial>
-    </a.mesh>
+    <>
+      <a.mesh
+        position={[0, 0, 0]}
+        scale={[viewport.width, viewport.height, 1]}>
+        {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
+        <planeGeometry attach="geometry" args={[1, 1]} />
+        <a.meshBasicMaterial attach="material" color={'black'} depthTest={false} />
+      </a.mesh>
+
+      <a.mesh
+        position={[0, 0, 1]}
+        scale={[viewport.width * 0.5, viewport.width * 0.5, 1]}>
+        {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
+        <planeGeometry attach="geometry" args={[1, 1]} />
+        {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
+        {/* <a.meshBasicMaterial attach="material" color={'blue'} depthTest={false} /> */}
+        <a.meshLambertMaterial attach="material" transparent opacity={1} depthTest={false}>
+          <primitive attach="map" object={texture} />
+        </a.meshLambertMaterial>
+      </a.mesh>
+    </>
   )
 }
 

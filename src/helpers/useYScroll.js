@@ -27,7 +27,7 @@ export default function useYScroll(bounds, props) {
 
   const fn = ({ xy: [, cy], previous: [, py], memo = ySpring.getValue() }) => {    
     if (!lock) {
-      scroll = clamp(memo + (cy - py) * 0.05, ...bounds)
+      scroll = clamp(memo + (py - cy) * 0.05, ...bounds)
       if (startDragPos && Math.abs(startDragPos - cy) > 1) {
         setYSpring({ ySpring: scroll })
       }
