@@ -12,7 +12,7 @@ export function Images({ top, mouse, scrollMax, snap }) {
 
   const [selected, setSelected] = useState(-1);
 
-  const selectImage = (key, y) => {    
+  const selectImage = (key, y) => {
 
     setSelected(key);
     if (key > -1) {
@@ -24,20 +24,32 @@ export function Images({ top, mouse, scrollMax, snap }) {
   }
 
 
-
-  const imageList = useMemo(() => data.map(([url, animation], i) => {
-
+  let left = false
+  let degree = 0;
+  const imageList = useMemo(() => data.map(([url, animation], i) => {    
     const texture = new THREE.TextureLoader().load(url);
+    
     // texture.minFilter = THREE.LinearFilter;
     // const {naturalWidth, naturalHeight} = texture.image;    
     // let x = i % 2 == 0 ? 1 : -1;
+    
+    //270 down
+    // let degree = 0;
+    let spread = 20;
+    if (left) {
+      degree = GetRandom(0, spread) - spread / 2;
+      left = !left;
+    } else {
+      degree = GetRandom(0, spread) + 180 - spread / 2;
+      left = !left;
+    }
 
-    let degree = GetRandom(0, 360);
-    let radius = 2;
-    let x = radius * Math.sin(degree);
+    let rad = THREE.Math.degToRad(degree)
+    let radius = 1;
+    let x = radius * Math.cos(rad);
     let y = -12 - (i * 4);
-    let z = radius * Math.cos(degree);
-
+    let z = radius * Math.sin(rad);
+    
     // let x = 0;
     // let z = 0;
     // let y = -1.5;
@@ -66,6 +78,7 @@ export function Images({ top, mouse, scrollMax, snap }) {
 export function Image({ url, opacity, startPosition, texture, selected, selectImage, index, ...props }) {
 
   const [sx, sy] = useMemo(() => {
+    return [1, 1];
     if (texture.image) {
       const { naturalWidth, naturalHeight } = texture.image;
       return getScale([naturalWidth, naturalHeight]);
