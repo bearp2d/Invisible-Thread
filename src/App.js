@@ -27,7 +27,7 @@ import { GlitchPass } from './postprocessing/GlitchPass'
 import { WaterPass } from './postprocessing/WaterPass'
 
 import ContactForm from './sceneElements/ContactForm'
-import { Vector3, Camera } from 'three/src/Three';
+import { Vector3, Camera, SpotLight } from 'three/src/Three';
 
 applySpring({ EffectComposer, RenderPass, GlitchPass, WaterPass })
 applyThree({ EffectComposer, RenderPass, GlitchPass, WaterPass })
@@ -66,14 +66,8 @@ export default App;
 
 
 function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScrollDown } }) {
-
-  const { viewport } = useThree();  
-  console.log(viewport.height);
-  console.log(viewport.width);
-
-
   const { size, camera } = useThree()
-  const scrollMax = size.height * 4.5  
+  const scrollMax = size.height * 4.5
   // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});
 
 
@@ -100,7 +94,7 @@ function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScr
     // }
 
     // console.log(rot, pos);
-    
+
 
     setScrollDown();
 
@@ -115,6 +109,8 @@ function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScr
     //   setScrollDown(true);
     // }
 
+    // console.log(mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5]).getValue());     
+
     camera.rotation.x = THREE.Math.degToRad(rot);;
     camera.position.y = -pos;
     camera.position.x = 0;
@@ -126,22 +122,29 @@ function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScr
       (mousePos[0] * 10) / 50000 - camera.position.x,
       camera.position.y,
       (mousePos[1] * 10) / 50000 - camera.position.z)
-      if (pos > 1) {
-        camera.position.lerp(cameraOffset, 0.8);
-      }
+    if (pos > 1) {
+      camera.position.lerp(cameraOffset, 0.8);
+    }
   })
 
   return (
     <>
-      {/* <a.spotLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
-      <a.pointLight intensity={1.2} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
+      {/* <a.spotLight intensity={1} distance={500} penumbra={0.0} angle={THREE.Math.degToRad(45)} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
+      {/* <SpotLight  */}
+      <a.pointLight intensity={1} color="green" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
       <Logo top={ySpring} />
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Stars position={y.interpolate(top => [0, -1 + top / 20, 0])} /> */}
 
       <Images top={ySpring} mouse={mouse} scrollMax={scrollMax} snap={snap} />
       {/* <Stars position={[0, 0, 0]} /> */}
-      {/* <Thing /> */}
+
+      <mesh castShadow receiveShadow position={[0, 0, 0]} >
+        <boxGeometry attach="geometry" args={[2, 2, 2]} />
+        <meshStandardMaterial attach="material" />
+      </mesh>
+
+      {/* <Thing  position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])}/> */}
       {/* <Background color={ySpring.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
       {/* <ContactForm /> */}
       {/* <Text opacity={1} fontSize={210} >
@@ -188,7 +191,7 @@ function Background({ color }) {
 }
 
 
-function Thing({ vertices = [[-1, 0, 0], [0, 1, 0], [1, 0, 0], [0, -1, 0], [-1, 0, 0]] }) {
+function Thing({ vertices = [[-1, 0, 0], [0, 1, 0], [1, 0, 0], [0, -1, 0], [-1, 0, 0]], position }) {
   return (
     <group ref={ref => console.log('we have access to the instance')}>
       <line>
@@ -199,7 +202,7 @@ function Thing({ vertices = [[-1, 0, 0], [0, 1, 0], [1, 0, 0], [0, -1, 0], [-1, 
         />
         <lineBasicMaterial attach="material" color="black" />
       </line>
-      <mesh onClick={e => console.log('click')} onPointerOver={e => console.log('hover')} onPointerOut={e => console.log('unhover')}>
+      <mesh position={position} onClick={e => console.log('click')} onPointerOver={e => console.log('hover')} onPointerOut={e => console.log('unhover')}>
         <octahedronGeometry attach="geometry" />
         <meshBasicMaterial attach="material" color="peachpuff" opacity={0.5} transparent />
       </mesh>

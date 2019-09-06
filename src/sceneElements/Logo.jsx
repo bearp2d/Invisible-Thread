@@ -12,13 +12,12 @@ const Logo = () => {
 
   return (
     <>
-      <a.mesh
+      {/* <a.mesh
         position={[0, 0, 0]}
-        scale={[viewport.width, viewport.height, 1]}>
-        {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
+        scale={[viewport.width, viewport.height, 1]}>      
         <planeGeometry attach="geometry" args={[1, 1]} />
         <a.meshBasicMaterial attach="material" color={'black'} depthTest={false} />
-      </a.mesh>
+      </a.mesh> */}
 
       <a.mesh
         position={[0, 0, 1]}
