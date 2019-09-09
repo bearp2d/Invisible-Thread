@@ -4,6 +4,7 @@ import { useSpring, config } from '@react-spring/core'
 import { useGesture } from 'react-use-gesture'
 import clamp from 'lodash/clamp'
 import { Vector3 } from 'three/src/Three'
+import { easeQuadInOut, easeCircleInOut, easeSinInOut, easeExpInOut } from 'd3-ease'
 
 export default function useYScroll(bounds, props) {
   const [{ scrollSpring }, setScrollSpring] = useSpring(() => ({ scrollSpring: 0, config: config.molasses }));
@@ -88,29 +89,26 @@ export default function useYScroll(bounds, props) {
     //   moveUp = false;
     // }
 
-    if (aTime >= 0 && aTime <= 100) {
-      setPositionSpring({ positionSpring: [0, -10, 5] })
-      setRotationSpring({ rotationSpring: -90 })
-    } else if (aTime > 100 && aTime <= 500) {
-      setPositionSpring({
-        positionSpring: [0, 0, 5], config: {
-          delay: 300,
-          mass: 200,
-          velocity: 0,
-          tension: 80,
-          friction: 300
-        }
-      })
-      // setRotationSpring({
-      //   rotationSpring: -90, config: {
-      //     tension: 300,
-      //     friction: 12
-      //   }
-      // })
-    }
-    console.log(aTime);
+    // if (pos >= 0 && pos <= 4.5) {
+    setPositionSpring({ positionSpring: [0, -10, 5], config: { easing: easeExpInOut, duration: 5000 } })
+    setRotationSpring({ rotationSpring: -90, config: { easing: easeExpInOut, duration: 5000 } })
+    // } else if (pos > 4.5 && pos <= 5) {
+    //   setPositionSpring({
+    //     positionSpring: [0, 0, 5], config: {
+    //       delay: 300,
+    //       mass: 200,
+    //       velocity: 0,
+    //       tension: 80,
+    //       friction: 300
+    //     }
+    //   })     
+    // } else if (pos > 5) {
+    //   setPositionSpring({ positionSpring: [0, pos, 5] })
+    // }
 
-    aTime++;
+
+    console.log(pos);
+
     // lock = (pos > 1 && pos < max);
   }
 

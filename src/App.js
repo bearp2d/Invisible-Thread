@@ -39,14 +39,14 @@ function App() {
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
   cam.position.z = -5;
 
-  const cameraControl = useYScroll([0, 200], { domTarget: window })
+  const cameraControl = useYScroll([0, 50], { domTarget: window })
 
   return (
     <>
       <Canvas className="canvas" camera={cam} onMouseMove={onMouseMove}>
         <Scene mouse={mouse} cameraControl={cameraControl} />
       </Canvas>
-      <aDom.div className="bar" style={{ height: cameraControl.scrollSpring.interpolate([0, 200], ['0%', '100%']) }} />
+      <aDom.div className="bar" style={{ height: cameraControl.scrollSpring.interpolate([0, 50], ['0%', '100%']) }} />
 
       <ContactFormElement />
 
