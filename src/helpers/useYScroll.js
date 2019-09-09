@@ -1,9 +1,7 @@
-import * as THREE from 'three/src/Three'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useSpring, config } from '@react-spring/core'
 import { useGesture } from 'react-use-gesture'
 import clamp from 'lodash/clamp'
-import { Vector3 } from 'three/src/Three'
 import { easeQuadInOut, easeCircleInOut, easeSinInOut, easeExpInOut } from 'd3-ease'
 
 export default function useYScroll(bounds, props) {
@@ -20,8 +18,6 @@ export default function useYScroll(bounds, props) {
       friction: 220
     }
   }));
-
-  let aTime = 0;
 
   let scroll = 0;
   let last = 0;

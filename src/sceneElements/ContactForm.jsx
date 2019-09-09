@@ -1,6 +1,6 @@
 import * as THREE from 'three/src/Three'
-import { apply as applyThree, Canvas, useRender, useThree } from 'react-three-fiber'
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import { useRender, useThree } from 'react-three-fiber'
+import React, { useEffect } from 'react'
 import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
 
 export default function ContactForm() {

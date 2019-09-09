@@ -1,6 +1,6 @@
 import * as THREE from 'three/src/Three'
 import React, { useMemo } from 'react'
-import { apply as applySpring, useSpring, a, interpolate, config } from 'react-spring/three'
+import { a } from 'react-spring/three'
 import { useThree } from 'react-three-fiber'
 // import { Vector3 } from 'three/src/Three';
 // import { Image } from './Images'

@@ -1,10 +1,9 @@
 import * as THREE from 'three/src/Three'
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
-import { apply as applySpring, useSpring, a, interpolate, config } from 'react-spring/three'
+import React, { useState, useCallback, useMemo } from 'react'
+import { useSpring, a } from 'react-spring/three'
 import data from '../data'
-import { Mesh, Vector3, Material, BufferGeometry, BoxBufferGeometry } from 'three/src/Three';
+import { Vector3 } from 'three/src/Three';
 import { GetRandom } from './HelperFuncitons'
-import { useRender } from 'react-three-fiber';
 
 //Image object
 export function Images({ top, mouse, scrollMax, snap }) {

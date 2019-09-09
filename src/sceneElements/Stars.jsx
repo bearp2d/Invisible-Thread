@@ -1,7 +1,7 @@
 import * as THREE from 'three/src/Three'
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
-import { apply as applyThree, Canvas, useRender, useThree } from 'react-three-fiber'
-import { apply as applySpring, useSpring, a, interpolate } from 'react-spring/three'
+import React, { useRef, useMemo } from 'react'
+import { useRender } from 'react-three-fiber'
+import { a } from 'react-spring/three'
 
 // /** This component rotates a bunch of stars */
 export default function Stars({ position }) {
