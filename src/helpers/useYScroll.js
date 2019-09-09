@@ -9,13 +9,13 @@ export default function useYScroll(bounds, props) {
   const [{ scrollSpring }, setScrollSpring] = useSpring(() => ({ scrollSpring: 0, config: config.molasses }));
   const [{ positionSpring }, setPositionSpring] = useSpring(() => ({
     positionSpring: [0, 0, 5], config: {
-      tension: 280,
-      friction: 220
+      tension: 190,
+      friction: 220,
     }
   }));
   const [{ rotationSpring }, setRotationSpring] = useSpring(() => ({
     rotationSpring: 0, config: {
-      tension: 280,
+      tension: 150,
       friction: 220
     }
   }));
@@ -91,10 +91,13 @@ export default function useYScroll(bounds, props) {
     if (aTime >= 0 && aTime <= 100) {
       setPositionSpring({ positionSpring: [0, -10, 5] })
       setRotationSpring({ rotationSpring: -90 })
-    } else if (aTime > 100 && aTime <= 1500) {
+    } else if (aTime > 100 && aTime <= 500) {
       setPositionSpring({
         positionSpring: [0, 0, 5], config: {
-          tension: 20,
+          delay: 300,
+          mass: 200,
+          velocity: 0,
+          tension: 80,
           friction: 300
         }
       })

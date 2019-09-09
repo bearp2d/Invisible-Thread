@@ -8,7 +8,7 @@ export default function Stars({ position }) {
     let group = useRef()
     let theta = 0
     useRender(() => {
-      const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
+      const r = 0.5 * Math.sin(THREE.Math.degToRad((theta += 0.01)))
       const s = Math.cos(THREE.Math.degToRad(theta * 2))
       group.current.rotation.set(r, r, r)
       group.current.scale.set(s, s, s)

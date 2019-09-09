@@ -136,9 +136,9 @@ function Scene({ mouse, cameraControl: { positionSpring, scrollSpring, setScroll
       {/* <a.spotLight intensity={1} distance={500} penumbra={0.0} angle={THREE.Math.degToRad(45)} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
       {/* <SpotLight  */}
       <a.pointLight intensity={1} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
-      <Logo top={scrollSpring} />
-      {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
-      {/* <Stars position={y.interpolate(top => [0, -1 + top / 20, 0])} /> */}
+      <Logo top={scrollSpring}/>
+       {/*<Effects factor={mouse.interpolate([0, 150], [1, 0])} />*/}
+       <Stars position={[0,0,-50]} depthTest={true} />
 
       <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} />
       {/* <Stars position={[0, 0, 0]} /> */}
@@ -189,7 +189,7 @@ function Background({ color }) {
   return (
     <mesh scale={[viewport.width, viewport.height, 1]} position={new Vector3(0, 0, 0)}>
       <planeGeometry attach="geometry" args={[1, 1]} />
-      <a.meshBasicMaterial attach="material" color={color} depthTest={false} />
+      <a.meshBasicMaterial attach="material" color={color} depthTest={true} />
     </mesh>
   )
 }
