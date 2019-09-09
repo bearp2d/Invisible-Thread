@@ -45,8 +45,8 @@ export function Images({ top, mouse, scrollMax, snap }) {
     let rad = THREE.Math.degToRad(degree)
     let radius = 1;
     let x = radius * Math.cos(rad);
-    let y = -12 - (i * 4);
-    let z = radius * Math.sin(rad);
+    let y = -4 - (i * 4);
+    let z = 5 + radius * Math.sin(rad);
         
     let startPosition = [x, y, z]
     return [animation, startPosition, texture];

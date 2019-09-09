@@ -33,7 +33,7 @@ applySpring({ EffectComposer, RenderPass, GlitchPass, WaterPass })
 applyThree({ EffectComposer, RenderPass, GlitchPass, WaterPass })
 
 function App() {
-  const [{ top, mouse }, set] = useSpring(() => ({ top: 0, mouse: [0, 0] }));
+  const [{ mouse }, set] = useSpring(() => ({ mouse: [0, 0] }));
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
   // const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
   const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
@@ -46,7 +46,7 @@ function App() {
       <Canvas className="canvas" camera={cam} onMouseMove={onMouseMove}>
         <Scene mouse={mouse} cameraControl={cameraControl} />
       </Canvas>
-      <aDom.div className="bar" style={{ height: cameraControl.ySpring.interpolate([0, 200], ['0%', '100%']) }} />
+      <aDom.div className="bar" style={{ height: cameraControl.scrollSpring.interpolate([0, 200], ['0%', '100%']) }} />
 
       <ContactFormElement />
 
@@ -65,7 +65,7 @@ function App() {
 export default App;
 
 
-function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScrollDown } }) {
+function Scene({ mouse, cameraControl: { positionSpring, scrollSpring, setScroll, rotationSpring, setRotation, setScrollDown } }) {
   const { size, camera } = useThree()
   const scrollMax = size.height * 4.5
   // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});
@@ -76,17 +76,19 @@ function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScr
 
   const snap = useCallback((snapTo, newY) => {
     if (snapTo) {
-      setY(-(newY + 2.5));
+      setScroll(-(newY + 2.5));
       setSnapped(true);
     } else {
-      setY(ySpring.getValue() - 2);
+      setScroll(scrollSpring.getValue() - 2);
       setSnapped(false);
     }
-  }, [setY])
+  }, [setScroll])
 
   useRender(() => {
-    const pos = ySpring.getValue();
-    const rot = rotation.getValue();
+    const [posX, posY, posZ] = positionSpring.getValue();
+    // const posY = positionY.getValue();
+    // const posZ = positionZ.getValue();
+    // const rot = rotation.getValue();
 
     // if (pos > 1 && pos < 2) {
     //   setRot(-90);
@@ -111,32 +113,34 @@ function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScr
 
     // console.log(mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5]).getValue());     
 
-    camera.rotation.x = THREE.Math.degToRad(rot);;
-    camera.position.y = -pos;
-    camera.position.x = 0;
-    camera.position.z = 5;
-
+    camera.rotation.x = THREE.Math.degToRad(rotationSpring.getValue());;
+    camera.position.x = posX;
+    camera.position.y = -posY;
+    camera.position.z = posZ;
+    // console.log(posX, posY, posZ);
+    // console.log(scrollSpring.getValue());
+    
     //Set mouse hover offset
     const mousePos = mouse.getValue();
     let cameraOffset = new THREE.Vector3(
       (mousePos[0] * 10) / 50000 - camera.position.x,
       camera.position.y,
       (mousePos[1] * 10) / 50000 - camera.position.z)
-    if (pos > 1) {
-      camera.position.lerp(cameraOffset, 0.8);
-    }
+    // if (posY > 1) {
+      // camera.position.lerp(cameraOffset, 0.8);
+    // }
   })
 
   return (
     <>
       {/* <a.spotLight intensity={1} distance={500} penumbra={0.0} angle={THREE.Math.degToRad(45)} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
       {/* <SpotLight  */}
-      <a.pointLight intensity={1} color="green" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
-      <Logo top={ySpring} />
+      <a.pointLight intensity={1} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
+      <Logo top={scrollSpring} />
       {/* <Effects factor={top.interpolate([0, 150], [1, 0])} /> */}
       {/* <Stars position={y.interpolate(top => [0, -1 + top / 20, 0])} /> */}
 
-      <Images top={ySpring} mouse={mouse} scrollMax={scrollMax} snap={snap} />
+      <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} />
       {/* <Stars position={[0, 0, 0]} /> */}
 
       <mesh castShadow receiveShadow position={[0, 0, 0]} >
@@ -145,7 +149,7 @@ function Scene({ mouse, cameraControl: { ySpring, setY, rotation, setRot, setScr
       </mesh>
 
       {/* <Thing  position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])}/> */}
-      {/* <Background color={ySpring.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
+      {/* <Background color={positionY.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
       {/* <ContactForm /> */}
       {/* <Text opacity={1} fontSize={210} >
         Invisible Thread
