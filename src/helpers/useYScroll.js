@@ -103,7 +103,7 @@ export default function useYScroll(bounds, props) {
     // }
 
 
-    console.log(pos);
+    // console.log(pos);
 
     // lock = (pos > 1 && pos < max);
   }

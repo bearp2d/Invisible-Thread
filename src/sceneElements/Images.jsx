@@ -6,7 +6,7 @@ import { Vector3 } from 'three/src/Three';
 import { GetRandom } from './HelperFuncitons'
 
 //Image object
-export function Images({ top, mouse, scrollMax, snap }) {
+export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
   //Load images from data.js  
 
   const [selected, setSelected] = useState(-1);
@@ -25,13 +25,8 @@ export function Images({ top, mouse, scrollMax, snap }) {
 
   let left = false
   let degree = 0;
-  const imageList = useMemo(() => data.map(([url, animation], i) => {    
-    const texture = new THREE.TextureLoader().load(url);
-    
-    // texture.minFilter = THREE.LinearFilter;
-    // const {naturalWidth, naturalHeight} = texture.image;    
-    // let x = i % 2 == 0 ? 1 : -1;
-            
+  const imageList = useMemo(() => imageLoader.materials.map(([i, material]) => {        
+
     let spread = 20;
     if (left) {
       degree = GetRandom(0, spread) - spread / 2;
@@ -46,18 +41,22 @@ export function Images({ top, mouse, scrollMax, snap }) {
     let x = radius * Math.cos(rad);
     let y = -4 - (i * 4);
     let z = 5 + radius * Math.sin(rad);
+
+    // let x = radius * Math.cos(rad);
+    // let z = -4 - (i * 4);
+    // let y = 5 + radius * Math.sin(rad);
         
     let startPosition = [x, y, z]
-    return [animation, startPosition, texture];
+    return [startPosition, material];
   }), [data])
 
-  return imageList.map(([animation, [x, y, z], texture], index) => (
+  return imageList.map(([[x, y, z], material], index) => (
     <Image
       snap={snap}
       rotation={new THREE.Euler(THREE.Math.degToRad(-90))}
       key={index}
-      index={index}
-      texture={texture}
+      index={index}      
+      material={material}
       selected={selected}
       selectImage={selectImage}
       // opacity={top.interpolate([0, 500], [0, 1])}
@@ -68,17 +67,19 @@ export function Images({ top, mouse, scrollMax, snap }) {
 }
 
 /** This component loads an image and projects it onto a plane */
-export function Image({ url, opacity, startPosition, texture, selected, selectImage, index, ...props }) {
+export function Image({ url, opacity, startPosition, material, selected, selectImage, index, ...props }) {
 
-  const [sx, sy] = useMemo(() => {
-    return [1, 1];
-    if (texture.image) {
-      const { naturalWidth, naturalHeight } = texture.image;
-      return getScale([naturalWidth, naturalHeight]);
-    } else {
-      return [1, 1];
-    }
-  }, [texture.image])
+  const [sx, sy] = [1, 1]
+  
+  // useMemo(() => {
+  //   return [1, 1];
+  //   // if (texture.image) {
+  //   //   const { naturalWidth, naturalHeight } = texture.image;
+  //   //   return getScale([naturalWidth, naturalHeight]);
+  //   // } else {
+  //   //   return [1, 1];
+  //   // }
+  // }, [texture.image])
 
   // console.log(texture);
   // const {naturalWidth, naturalHeight} = texture.image;
@@ -127,13 +128,20 @@ export function Image({ url, opacity, startPosition, texture, selected, selectIm
       position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
       onPointerUp={toggle}
       // onPointerOver={hover} onPointerOut={unhover}
-      scale={[sx, sy, 1]}>
+      scale={[sx, sy, 1]}
+      material={material} 
+      frustumCulled={false}
+      onAfterRender={() => {
+        this.frustumCulled = true;
+        this.onAfterRender = function(){};
+      }}
+      >
       {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
       <planeGeometry attach="geometry" args={[1, 1, 1]} />
       {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
-      <a.meshLambertMaterial attach="material" transparent opacity={opacity}>
+      {/* <a.meshLambertMaterial attach="material" transparent opacity={opacity}>
         <primitive attach="map" object={texture} />
-      </a.meshLambertMaterial>
+      </a.meshLambertMaterial> */}
     </a.mesh>
   )
 }

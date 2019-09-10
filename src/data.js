@@ -14,20 +14,20 @@ import img13 from './images/resizes/abstract_2.jpg'
 import img14 from './images/resizes/abstract_3.jpg'
 
 export default [
-  [img1, 'swipe'],
-  [img4, 'swipe'],
-  [img2, 'swipe'],
-  [img3, 'swipe'],
+  img1,
+  img4,
+  img2,
+  img3,
   
-  [img5, 'swipe'],
-  [img6, 'swipe'],
+  img5,
+  img6,
   
-  [img7, 'swipe'],
-  [img8, 'swipe'],
-  [img9, 'swipe'],
-  [img10, 'swipe'],
-  [img11, 'swipe'],
-  [img12, 'swipe'],
-  [img13, 'swipe'],
-  [img14, 'swipe'],
+  img7,
+  img8,
+  img9,
+  img10,
+  img11,
+  img12,
+  img13,
+  img14,
 ]

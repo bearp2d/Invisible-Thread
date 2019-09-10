@@ -1,5 +1,5 @@
 import * as THREE from 'three/src/Three'
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { apply as applyThree, Canvas, useRender, useThree } from 'react-three-fiber'
 import { apply as applySpring, useSpring, a } from 'react-spring/three'
 import { a as aDom } from '@react-spring/web'
@@ -28,6 +28,8 @@ import { WaterPass } from './postprocessing/WaterPass'
 
 import ContactForm from './sceneElements/ContactForm'
 import { Vector3, Camera, SpotLight } from 'three/src/Three';
+import ImageLoader from './helpers/ImageLoader'
+import data from './data'
 
 applySpring({ EffectComposer, RenderPass, GlitchPass, WaterPass })
 applyThree({ EffectComposer, RenderPass, GlitchPass, WaterPass })
@@ -36,20 +38,28 @@ function App() {
   const [{ mouse }, set] = useSpring(() => ({ mouse: [0, 0] }));
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
   // const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
-  const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
-  cam.position.z = -5;
+  // const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
+  // cam.position.z = -5;
 
   const cameraControl = useYScroll([0, 50], { domTarget: window })
+  const [loaded, setLoaded] = useState(false);
+
+
+  const imageLoader = useMemo(() => new ImageLoader(data, setLoaded), [data])
 
   return (
     <>
-      <Canvas className="canvas" camera={cam} onMouseMove={onMouseMove}>
-        <Scene mouse={mouse} cameraControl={cameraControl} />
-      </Canvas>
-      <aDom.div className="bar" style={{ height: cameraControl.scrollSpring.interpolate([0, 50], ['0%', '100%']) }} />
+      {
+        loaded === true ?
+          <>
+            <Canvas className="canvas" onMouseMove={onMouseMove}>
+              <Scene mouse={mouse} cameraControl={cameraControl} imageLoader={imageLoader} />
+            </Canvas>
+            <aDom.div className="bar" style={{ height: cameraControl.scrollSpring.interpolate([0, 50], ['0%', '100%']) }} />
 
-      <ContactFormElement />
-
+            <ContactFormElement />
+          </>
+          : ''}
       {/* <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
         <source src={heart} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
       </video>
@@ -65,14 +75,11 @@ function App() {
 export default App;
 
 
-function Scene({ mouse, cameraControl: { positionSpring, scrollSpring, setScroll, rotationSpring, setRotation, setScrollDown } }) {
-  const { size, camera } = useThree()
+function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpring, setScroll, rotationSpring, setRotation, setScrollDown } }) {
+  const { size, camera, scene } = useThree()
   const scrollMax = size.height * 4.5
-  // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});
-
-
-  const [snapped, setSnapped] = useState(false);
-
+  // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});  
+  const [snapped, setSnapped] = useState(false);  
 
   const snap = useCallback((snapTo, newY) => {
     if (snapTo) {
@@ -82,8 +89,8 @@ function Scene({ mouse, cameraControl: { positionSpring, scrollSpring, setScroll
       setScroll(scrollSpring.getValue() - 2);
       setSnapped(false);
     }
-  }, [setScroll])
-
+  }, [setScroll])  
+  
   useRender(() => {
     const [posX, posY, posZ] = positionSpring.getValue();
     // const posY = positionY.getValue();
@@ -119,7 +126,7 @@ function Scene({ mouse, cameraControl: { positionSpring, scrollSpring, setScroll
     camera.position.z = posZ;
     // console.log(posX, posY, posZ);
     // console.log(scrollSpring.getValue());
-    
+
     //Set mouse hover offset
     const mousePos = mouse.getValue();
     let cameraOffset = new THREE.Vector3(
@@ -127,7 +134,7 @@ function Scene({ mouse, cameraControl: { positionSpring, scrollSpring, setScroll
       camera.position.y,
       (mousePos[1] * 10) / 50000 - camera.position.z)
     // if (posY > 1) {
-      // camera.position.lerp(cameraOffset, 0.8);
+    // camera.position.lerp(cameraOffset, 0.8);
     // }
   })
 
@@ -136,11 +143,11 @@ function Scene({ mouse, cameraControl: { positionSpring, scrollSpring, setScroll
       {/* <a.spotLight intensity={1} distance={500} penumbra={0.0} angle={THREE.Math.degToRad(45)} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
       {/* <SpotLight  */}
       <a.pointLight intensity={1} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
-      <Logo top={scrollSpring}/>
-       {/*<Effects factor={mouse.interpolate([0, 150], [1, 0])} />*/}
-       <Stars position={[0,0,-50]} depthTest={true} />
+      <Logo top={scrollSpring} />
+      {/*<Effects factor={mouse.interpolate([0, 150], [1, 0])} />*/}
+      <Stars position={[0, 0, -50]} depthTest={false} />
 
-      <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} />
+      <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} />
       {/* <Stars position={[0, 0, 0]} /> */}
 
       <mesh castShadow receiveShadow position={[0, 0, 0]} >
