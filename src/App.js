@@ -5,8 +5,6 @@ import { apply as applySpring, useSpring, a } from 'react-spring/three'
 import { a as aDom } from '@react-spring/web'
 import './styles.css'
 import { Images, Image } from './sceneElements/Images'
-// import Text from './sceneElements/Text'
-// import Thread from './sceneElements/Thread'
 import Stars from './sceneElements/Stars'
 import heart from './images/heart.mp4'
 import video1 from './images/small/video1.mp4'
@@ -17,36 +15,18 @@ import ContactFormElement from './sceneElements/ContactFormElement'
 
 import useYScroll from './helpers/useYScroll'
 
-import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
-
-// Import and register postprocessing classes as three-native-elements for both react-three-fiber & react-spring
-// They'll be available as native elements <effectComposer /> from then on ...
-import { EffectComposer } from './postprocessing/EffectComposer'
-import { RenderPass } from './postprocessing/RenderPass'
-import { GlitchPass } from './postprocessing/GlitchPass'
-import { WaterPass } from './postprocessing/WaterPass'
-
 import ContactForm from './sceneElements/ContactForm'
 import { Vector3, Camera, SpotLight } from 'three/src/Three';
 import ImageLoader from './helpers/ImageLoader'
 import data from './data'
 
-applySpring({ EffectComposer, RenderPass, GlitchPass, WaterPass })
-applyThree({ EffectComposer, RenderPass, GlitchPass, WaterPass })
-
 function App() {
   const [{ mouse }, set] = useSpring(() => ({ mouse: [0, 0] }));
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
-  // const onScroll = useCallback(e => set({ top: e.target.scrollTop }), []);
-  // const cam = new THREE.PerspectiveCamera(45, 0, 0.1, 1000);
-  // cam.position.z = -5;
-
   const cameraControl = useYScroll([0, 50], { domTarget: window })
   const [loaded, setLoaded] = useState(false);
 
-
   const imageLoader = useMemo(() => new ImageLoader(data, setLoaded), [data])
-
   return (
     <>
       {
@@ -59,7 +39,9 @@ function App() {
 
             <ContactFormElement />
           </>
-          : ''}
+          :
+          <Loading />
+      }
       {/* <video id="video1" loop crossOrigin="anonymous" style={{ display: 'none' }}>
         <source src={heart} type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
       </video>
@@ -75,11 +57,18 @@ function App() {
 export default App;
 
 
+function Loading() {
+
+  return <>
+    <h1 style={{color: 'white', margin: 'auto', fontSize: '20vh'}}>Loading...</h1>
+  </>
+}
+
+
 function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpring, setScroll, rotationSpring, setRotation, setScrollDown } }) {
   const { size, camera, scene } = useThree()
   const scrollMax = size.height * 4.5
-  // {rotation: 0, from: {rotation: 0}, to: {rotation: 90}, config: config.molasses});  
-  const [snapped, setSnapped] = useState(false);  
+  const [snapped, setSnapped] = useState(false);
 
   const snap = useCallback((snapTo, newY) => {
     if (snapTo) {
@@ -89,8 +78,8 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
       setScroll(scrollSpring.getValue() - 2);
       setSnapped(false);
     }
-  }, [setScroll])  
-  
+  }, [setScroll])
+
   useRender(() => {
     const [posX, posY, posZ] = positionSpring.getValue();
     // const posY = positionY.getValue();
@@ -101,9 +90,7 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
     //   setRot(-90);
     //   setY(2);
     // }
-
     // console.log(rot, pos);
-
 
     setScrollDown();
 
@@ -168,7 +155,6 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
   )
 }
 
-
 // /** This component creates a glitch effect */
 const Effects = React.memo(({ factor }) => {
   const { gl, scene, camera, size } = useThree()
@@ -189,34 +175,3 @@ const Effects = React.memo(({ factor }) => {
     </effectComposer>
   )
 })
-
-// /** This component creates a fullscreen colored plane */
-function Background({ color }) {
-  const { viewport } = useThree()
-  return (
-    <mesh scale={[viewport.width, viewport.height, 1]} position={new Vector3(0, 0, 0)}>
-      <planeGeometry attach="geometry" args={[1, 1]} />
-      <a.meshBasicMaterial attach="material" color={color} depthTest={true} />
-    </mesh>
-  )
-}
-
-
-function Thing({ vertices = [[-1, 0, 0], [0, 1, 0], [1, 0, 0], [0, -1, 0], [-1, 0, 0]], position }) {
-  return (
-    <group ref={ref => console.log('we have access to the instance')}>
-      <line>
-        <geometry
-          attach="geometry"
-          vertices={vertices.map(v => new THREE.Vector3(...v))}
-          onUpdate={self => (self.verticesNeedUpdate = true)}
-        />
-        <lineBasicMaterial attach="material" color="black" />
-      </line>
-      <mesh position={position} onClick={e => console.log('click')} onPointerOver={e => console.log('hover')} onPointerOut={e => console.log('unhover')}>
-        <octahedronGeometry attach="geometry" />
-        <meshBasicMaterial attach="material" color="peachpuff" opacity={0.5} transparent />
-      </mesh>
-    </group>
-  )
-}
