@@ -16,7 +16,7 @@ const Logo = () => {
         position={[0, 0, 0]}
         scale={[viewport.width, viewport.height, 1]}>      
         <planeGeometry attach="geometry" args={[1, 1]} />
-        <a.meshBasicMaterial attach="material" color={'black'} depthTest={false} />
+        <a.meshBasicMaterial attach="material" color={'black'} depthTest={true} />
       </a.mesh>
 
       <a.mesh
@@ -26,7 +26,7 @@ const Logo = () => {
         <planeGeometry attach="geometry" args={[1, 1]} />
         {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
         {/* <a.meshBasicMaterial attach="material" color={'blue'} depthTest={false} /> */}
-        <a.meshLambertMaterial attach="material" transparent opacity={1} depthTest={false}>
+        <a.meshLambertMaterial attach="material" transparent opacity={1} depthTest={true}>
           <primitive attach="map" object={texture} />
         </a.meshLambertMaterial>
       </a.mesh>

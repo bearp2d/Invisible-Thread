@@ -20,13 +20,20 @@ import { Vector3, Camera, SpotLight } from 'three/src/Three';
 import ImageLoader from './helpers/ImageLoader'
 import data from './data'
 
+import { EffectComposer } from './postprocessing/EffectComposer'
+import { RenderPass } from './postprocessing/RenderPass'
+import { GlitchPass } from './postprocessing/GlitchPass'
+import { WaterPass } from './postprocessing/WaterPass'
+
+applySpring({ EffectComposer, RenderPass, GlitchPass, WaterPass })
+applyThree({ EffectComposer, RenderPass, GlitchPass, WaterPass })
+
 function App() {
   const [{ mouse }, set] = useSpring(() => ({ mouse: [0, 0] }));
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
-  const cameraControl = useYScroll([0, 50], { domTarget: window })
   const [loaded, setLoaded] = useState(false);
-
   const imageLoader = useMemo(() => new ImageLoader(data, setLoaded), [data])
+  const cameraControl = useYScroll([0, 50], { domTarget: window })
   return (
     <>
       {
@@ -60,7 +67,7 @@ export default App;
 function Loading() {
 
   return <>
-    <h1 style={{color: 'white', margin: 'auto', fontSize: '20vh'}}>Loading...</h1>
+    <h1 style={{ color: 'white', margin: 'auto', fontSize: '20vh' }}>Loading...</h1>
   </>
 }
 
@@ -82,6 +89,7 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
 
   useRender(() => {
     const [posX, posY, posZ] = positionSpring.getValue();
+    const [rotX, rotY, rotZ] = rotationSpring.getValue();
     // const posY = positionY.getValue();
     // const posZ = positionZ.getValue();
     // const rot = rotation.getValue();
@@ -107,7 +115,9 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
 
     // console.log(mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5]).getValue());     
 
-    camera.rotation.x = THREE.Math.degToRad(rotationSpring.getValue());;
+    camera.rotation.x = THREE.Math.degToRad(rotX);
+    camera.rotation.y = THREE.Math.degToRad(rotY);
+    camera.rotation.z = THREE.Math.degToRad(rotZ);
     camera.position.x = posX;
     camera.position.y = -posY;
     camera.position.z = posZ;
@@ -130,8 +140,9 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
       {/* <a.spotLight intensity={1} distance={500} penumbra={0.0} angle={THREE.Math.degToRad(45)} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
       {/* <SpotLight  */}
       <a.pointLight intensity={1} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
+      <Effects factor={scrollSpring.interpolate([0, 150], [1, 0])} />
+
       <Logo top={scrollSpring} />
-      {/*<Effects factor={mouse.interpolate([0, 150], [1, 0])} />*/}
       <Stars position={[0, 0, -50]} depthTest={false} />
 
       <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} />
@@ -167,11 +178,11 @@ const Effects = React.memo(({ factor }) => {
     <effectComposer ref={composer} args={[gl]}>
       {/* Main Pass that renders the Scene */}
       <renderPass attachArray="passes" args={[scene, camera]} />
-      <a.waterPass attachArray="passes" factor={factor} renderToScreen />
+      {/* <a.waterPass attachArray="passes" factor={1} renderToScreen /> */}
 
       {/* <a.unrealBloomPass attachArray="passes" factor={factor} renderToScreen /> */}
       {/* Effect Passes renderToScreen draws current pass to screen*/}
-      {/* <a.glitchPass attachArray="passes" renderToScreen factor={factor} /> */}
+      <a.glitchPass attachArray="passes" renderToScreen factor={factor} />
     </effectComposer>
   )
 })

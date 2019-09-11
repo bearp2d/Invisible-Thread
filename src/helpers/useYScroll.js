@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useSpring, config } from '@react-spring/core'
 import { useGesture } from 'react-use-gesture'
 import clamp from 'lodash/clamp'
-import { easeQuadInOut, easeCircleInOut, easeSinInOut, easeExpInOut } from 'd3-ease'
+import { easeQuadInOut, easeCircleInOut, easeSinInOut, easeExpInOut, easeQuadIn, easeQuadOut, easePolyInOut, easeBackInOut, easeCubicInOut } from 'd3-ease'
 
 export default function useYScroll(bounds, props) {
   const [{ scrollSpring }, setScrollSpring] = useSpring(() => ({ scrollSpring: 0, config: config.molasses }));
@@ -13,11 +13,34 @@ export default function useYScroll(bounds, props) {
     }
   }));
   const [{ rotationSpring }, setRotationSpring] = useSpring(() => ({
-    rotationSpring: 0, config: {
+    rotationSpring: [0, 0, 0], config: {
       tension: 150,
       friction: 220
     }
   }));
+
+  const Stage1 = () => {
+    setPositionSpring({ positionSpring: [0, 0, 20], config: { easing: easeQuadInOut, duration: 4000 } })
+  }
+
+  const Stage2 = () => {
+    setPositionSpring({ positionSpring: [0, 0, 5], config: { easing: easeQuadInOut, duration: 2000 } })
+    setRotationSpring({ rotationSpring: [-90, 0, 180], config: { easing: easeQuadInOut, duration: 2000 } })
+  }
+
+  const Stage3 = () => {
+    // setPositionSpring({ positionSpring: [0, 10, 0], config: { easing: easeQuadInOut, duration: 2000 } })
+    // setRotationSpring({ rotationSpring: [0, 0, 45], config: { easing: easeQuadInOut, duration: 2000 } })
+  }
+
+
+  const startAnimationDown = () => {
+    Stage1()
+    setTimeout(Stage2, 2000);
+    setTimeout(Stage3, 4000);
+  }
+
+
 
   let scroll = 0;
   let last = 0;
@@ -65,30 +88,33 @@ export default function useYScroll(bounds, props) {
   //   return [positionX, positionY, positionZ]
   // }
 
+  useEffect(() => {
+    startAnimationDown();
+  }, )
+
   const setScrollDown = e => {
     const pos = scrollSpring.getValue();
     const max = 5
-    if (pos > 1 && pos < max) {
-      if (moveUp) {
-        setScrollSpring(0)        
-        setRotationSpring({ rotationSpring: 0 })
-      } else {
-        setScrollSpring(max + max * 0.1)        
-        setRotationSpring({ rotationSpring : -90 })
-      }
-    }
-    setPositionSpring({ positionSpring: [0, pos, 5]})
+    // if (pos > 1 && pos < max) {
+    //   if (moveUp) {
+    //     setScrollSpring(0)        
+    //     setRotationSpring({ rotationSpring: 0 })
+    //   } else {
+    //     setScrollSpring(max + max * 0.1)        
+    //     setRotationSpring({ rotationSpring : -90 })
+    //   }
+    // }
+    // setPositionSpring({ positionSpring: [0, pos, 5]})
 
-    if (pos > max) {
-      moveUp = true;
-    }
-    if (pos < 1) {
-      moveUp = false;
-    }
+    // if (pos > max) {
+    //   moveUp = true;
+    // }
+    // if (pos < 1) {
+    //   moveUp = false;
+    // }
 
     // if (pos >= 0 && pos <= 4.5) {
-    // setPositionSpring({ positionSpring: [0, -10, 5], config: { easing: easeExpInOut, duration: 5000 } })
-    // setRotationSpring({ rotationSpring: -90, config: { easing: easeExpInOut, duration: 5000 } })
+
     // } else if (pos > 4.5 && pos <= 5) {
     //   setPositionSpring({
     //     positionSpring: [0, 0, 5], config: {
@@ -106,7 +132,7 @@ export default function useYScroll(bounds, props) {
 
     // console.log(pos);
 
-    lock = (pos > 1 && pos < max);
+    // lock = (pos > 1 && pos < max);
   }
 
 
