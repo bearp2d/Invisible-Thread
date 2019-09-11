@@ -89,7 +89,7 @@ export default function useYScroll(bounds, props) {
   // }
 
   useEffect(() => {
-    startAnimationDown();
+    // startAnimationDown();
   }, )
 
   const setScrollDown = e => {
