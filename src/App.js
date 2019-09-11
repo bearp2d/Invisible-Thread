@@ -137,7 +137,7 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
       <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} />
       {/* <Stars position={[0, 0, 0]} /> */}
 
-      <mesh castShadow receiveShadow position={[0, 0, 0]} >
+      <mesh castShadow receiveShadow position={[0, -10, 0]} >
         <boxGeometry attach="geometry" args={[2, 2, 2]} />
         <meshStandardMaterial attach="material" />
       </mesh>

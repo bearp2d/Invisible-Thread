@@ -48,12 +48,12 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
         
     let startPosition = [x, y, z]
     return [startPosition, material];
-  }), [data])
+  }), [data])  
 
   return imageList.map(([[x, y, z], material], index) => (
     <Image
       snap={snap}
-      rotation={new THREE.Euler(THREE.Math.degToRad(-90))}
+      rotation={new THREE.Euler(THREE.Math.degToRad(-90)).toArray()}
       key={index}
       index={index}      
       material={material}
@@ -122,6 +122,7 @@ export function Image({ url, opacity, startPosition, material, selected, selectI
       // velocity: 5
     }
   })
+  // const mat = new THREE.MeshBasicMaterial({color: 'blue'});
 
   return (
     <a.mesh {...props}

@@ -67,27 +67,28 @@ export default function useYScroll(bounds, props) {
 
   const setScrollDown = e => {
     const pos = scrollSpring.getValue();
-    // const max = 5
-    // if (pos > 1 && pos < max) {
-    //   if (moveUp) {
-    //     setY(0)
-    //     setRotationSpring({ rotation: 0 })
-    //   } else {
-    //     setY(max + max * 0.1)
-    //     setRotationSpring({ rotation: -90 })
-    //   }
-    // }
+    const max = 5
+    if (pos > 1 && pos < max) {
+      if (moveUp) {
+        setScrollSpring(0)        
+        setRotationSpring({ rotationSpring: 0 })
+      } else {
+        setScrollSpring(max + max * 0.1)        
+        setRotationSpring({ rotationSpring : -90 })
+      }
+    }
+    setPositionSpring({ positionSpring: [0, pos, 5]})
 
-    // if (pos > max) {
-    //   moveUp = true;
-    // }
-    // if (pos < 1) {
-    //   moveUp = false;
-    // }
+    if (pos > max) {
+      moveUp = true;
+    }
+    if (pos < 1) {
+      moveUp = false;
+    }
 
     // if (pos >= 0 && pos <= 4.5) {
-    setPositionSpring({ positionSpring: [0, -10, 5], config: { easing: easeExpInOut, duration: 5000 } })
-    setRotationSpring({ rotationSpring: -90, config: { easing: easeExpInOut, duration: 5000 } })
+    // setPositionSpring({ positionSpring: [0, -10, 5], config: { easing: easeExpInOut, duration: 5000 } })
+    // setRotationSpring({ rotationSpring: -90, config: { easing: easeExpInOut, duration: 5000 } })
     // } else if (pos > 4.5 && pos <= 5) {
     //   setPositionSpring({
     //     positionSpring: [0, 0, 5], config: {
@@ -105,7 +106,7 @@ export default function useYScroll(bounds, props) {
 
     // console.log(pos);
 
-    // lock = (pos > 1 && pos < max);
+    lock = (pos > 1 && pos < max);
   }
 
 
