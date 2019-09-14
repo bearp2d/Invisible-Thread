@@ -7,7 +7,7 @@ import { GetRandom } from './HelperFuncitons'
 
 //Image object
 export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
-  //Load images from data.js  
+  //Load images from data.js
 
   const [selected, setSelected] = useState(-1);
 
@@ -24,38 +24,54 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
 
 
   let left = false
+  let right = true;
   let degree = 0;
-  const imageList = useMemo(() => imageLoader.materials.map(([i, material]) => {        
+  const imageList = useMemo(() => imageLoader.materials.map(([i, material]) => {
 
-    let spread = 20;
-    if (left) {
-      degree = GetRandom(0, spread) - spread / 2;
+    let spread = 7;
+    //console.log(left, right);
+    //1
+    if (left && right) {
+      degree = (GetRandom(0, spread) + 45 - spread / 2) * -1;
+      right = !right;
+    } else if(!left && right){
+      //4
+      degree = GetRandom(0, spread) + 45 - spread / 2;
       left = !left;
-    } else {
-      degree = GetRandom(0, spread) + 180 - spread / 2;
+    } else if(left && !right){
+      //3
+      degree = GetRandom(0, spread) + 135 - spread / 2;
       left = !left;
+
+    }else if(!left && !right){
+      //2
+      degree = GetRandom(0, spread) + 215 - spread / 2;
+      right = !right;
+
     }
 
     let rad = THREE.Math.degToRad(degree)
-    let radius = 1;
+    let radius = 2.5;
     let x = radius * Math.cos(rad);
-    let y = -4 - (i * 4);
-    let z = 5 + radius * Math.sin(rad);
+    console.log(x)
+    let y = -2 - (i * 2);
+    let z = 4.5 + radius * Math.sin(rad);
 
     // let x = radius * Math.cos(rad);
     // let z = -4 - (i * 4);
     // let y = 5 + radius * Math.sin(rad);
-        
+
     let startPosition = [x, y, z]
     return [startPosition, material];
-  }), [data])  
+  }), [data])
 
   return imageList.map(([[x, y, z], material], index) => (
+      <>
     <Image
       snap={snap}
       rotation={new THREE.Euler(THREE.Math.degToRad(-90)).toArray()}
       key={index}
-      index={index}      
+      index={index}
       material={material}
       selected={selected}
       selectImage={selectImage}
@@ -63,14 +79,16 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
       opacity={1}
       startPosition={new Vector3(x, y, z)}
     />
+        </>
   ))
+
 }
 
 /** This component loads an image and projects it onto a plane */
 export function Image({ url, opacity, startPosition, material, selected, selectImage, index, ...props }) {
 
-  const [sx, sy] = [1, 1]
-  
+  const [sx, sy] = [2, 2]
+
   // useMemo(() => {
   //   return [1, 1];
   //   // if (texture.image) {
@@ -87,7 +105,7 @@ export function Image({ url, opacity, startPosition, material, selected, selectI
   // const [sx, sy] = [1, 1];
 
 
-  // const texture = useMemo(() => new THREE.MeshBasicMaterial({ color: new THREE.Color('green'), transparent: true }));  
+  // const texture = useMemo(() => new THREE.MeshBasicMaterial({ color: new THREE.Color('green'), transparent: true }));
 
   // let video = document.getElementById('video1');
   // video.play();
@@ -130,7 +148,7 @@ export function Image({ url, opacity, startPosition, material, selected, selectI
       onPointerUp={toggle}
       // onPointerOver={hover} onPointerOut={unhover}
       scale={[sx, sy, 1]}
-      material={material} 
+      material={material}
       frustumCulled={false}
       onAfterRender={() => {
         this.frustumCulled = true;

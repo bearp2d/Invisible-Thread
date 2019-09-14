@@ -134,7 +134,6 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
     // camera.position.lerp(cameraOffset, 0.8);
     // }
   })
-
   return (
     <>
       {/* <a.spotLight intensity={1} distance={500} penumbra={0.0} angle={THREE.Math.degToRad(45)} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
@@ -142,20 +141,21 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
       <a.pointLight intensity={1} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
       <Effects factor={scrollSpring.interpolate([0, 150], [1, 0])} />
 
-      {/* <Logo top={scrollSpring} /> */}
-      <Stars position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} />
+       <Logo top={scrollSpring} />
+      <Stars2 position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} />
 
       <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} />
       {/* <Stars position={[0, 0, 0]} /> */}
 
-      <mesh castShadow receiveShadow position={[0, -10, 0]} >
-        <boxGeometry attach="geometry" args={[2, 2, 2]} />
-        <meshStandardMaterial attach="material" />
-      </mesh>
+      {/*<mesh castShadow receiveShadow position={[0, -10, 0]} >*/}
+      {/*  <boxGeometry attach="geometry" args={[2, 2, 2]} />*/}
+      {/*  <meshStandardMaterial attach="material" />*/}
+      {/*</mesh>*/}
 
       {/* <Thing  position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])}/> */}
-      {/* <Background color={positionY.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
-      {/* <ContactForm /> */}
+      {/*<Background color={mouse.interpolate([0, 0, -50], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} />*/}
+
+      <ContactForm/>
       {/* <Text opacity={1} fontSize={210} >
         Invisible Thread
       </Text> */}
@@ -178,11 +178,34 @@ const Effects = React.memo(({ factor }) => {
     <effectComposer ref={composer} args={[gl]}>
       {/* Main Pass that renders the Scene */}
       <renderPass attachArray="passes" args={[scene, camera]} />
-      {/* <a.waterPass attachArray="passes" factor={1} renderToScreen /> */}
+       {/*<a.waterPass attachArray="passes" factor={1} renderToScreen />*/}
 
-      {/* <a.unrealBloomPass attachArray="passes" factor={factor} renderToScreen /> */}
+       {/*<a.unrealBloomPass attachArray="passes" factor={1} renderToScreen />*/}
       {/* Effect Passes renderToScreen draws current pass to screen*/}
       <a.glitchPass attachArray="passes" renderToScreen factor={factor} />
     </effectComposer>
   )
 })
+function Stars2({ position }) {
+  let group = useRef()
+  let theta = 0
+  useRender(() => {
+    const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.005)))
+    const s = Math.cos(THREE.Math.degToRad(theta * 2))
+    group.current.rotation.set(r, r, r)
+    group.current.scale.set(s, s, s)
+  })
+  const [geo, mat, coords] = useMemo(() => {
+    const geo = new THREE.SphereBufferGeometry(0.4, 2, 2)
+    const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('peachpuff'), transparent: true })
+    const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
+    return [geo, mat, coords]
+  }, [])
+  return (
+      <a.group ref={group} position={position}>
+        {coords.map(([p1, p2, p3], i) => (
+            <mesh key={i} geometry={geo} material={mat} position={[p1, p2, p3]} />
+        ))}
+      </a.group>
+  )
+}

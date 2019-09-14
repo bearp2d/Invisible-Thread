@@ -17,12 +17,13 @@ export default function ContactForm() {
       element.style.background = '#ffffff';
       element.style.display = 'block';
       element.style.textAlign = 'center';
+      element.style.opacity = '0';
 
       var object = new CSS3DObject(element);
       object.position.x = 0;
-      object.position.y = -20;
-      object.position.z = 0;
-      object.rotation.x = THREE.Math.degToRad(-90);
+      object.position.y = 0;
+      object.position.z = -26;
+      // /object.rotation.z = THREE.Math.degToRad(180);
       // object.rotation.x = Math.random();
       // object.rotation.y = Math.random();
       // object.rotation.z = Math.random();
@@ -34,9 +35,10 @@ export default function ContactForm() {
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.domElement.style.width = '100vw';
       renderer.domElement.style.height = '100vh';
-      renderer.domElement.style.position = 'absolute';
+      renderer.domElement.style.position = 'absolute'
+      renderer.domElement.style.zIndex = '0';
       renderer.domElement.style.top = '0';
-      renderer.domElement.style.pointerEvents = 'none'
+      // renderer.domElement.style.pointerEvents = 'none'
       document.body.appendChild(renderer.domElement);
 
       window.addEventListener( 'resize', onWindowResize, false );
