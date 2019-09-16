@@ -10,7 +10,7 @@ export default function ContactFormElement() {
         <div className="nav">
           {/* <a href="#" className="menu-activator"><i className="ion-ios-more"></i></a>*/}
           {/* <img src={logoPngBlk} style={{ width: '250px' }} /> */}
-          {/* <a href="#" className="white link"><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>*/}
+          <a href="#" className="white link"><h6 className="text-link">RETURN TO BEGINNING</h6><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>
         </div>
         <div className="container">
           <div className="inner">
@@ -25,21 +25,21 @@ export default function ContactFormElement() {
                 <div className="form">
                   <h1>Let's chat!</h1>
                   <div className="group">
-                    <input type="text" required />
-                    <span className="highlight"></span>
-                    <label>Your name</label>
+                    <input type="text" placeholder="Name" required />
+                    {/*<span className="highlight"></span>*/}
+                    {/*<label>Your name</label>*/}
                   </div>
                   <br />
                   <div className="group">
-                    <input type="text" required />
-                    <span className="highlight"></span>
-                    <label>Your email</label>
+                    <input type="text" placeholder="Email" required />
+                    {/*<span className="highlight"></span>*/}
+                    {/*<label>Your email</label>*/}
                   </div>
                   <br />
                   <div className="group">
-                    <input type="text" required />
-                    <span className="highlight"></span>
-                    <label>Message</label>
+                    <input type="text" placeholder="Message" required />
+                    {/*<span className="highlight"></span>*/}
+                    {/*<label>Message</label>*/}
                   </div>
                   <br />
                   <a className="send-btn">Send</a>

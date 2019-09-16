@@ -5,7 +5,7 @@ import { useThree } from 'react-three-fiber'
 // import { Vector3 } from 'three/src/Three';
 // import { Image } from './Images'
 // import logo from '../images/thisSVG.svg'
-import logoPngBlk from '../images/ToResize/logo_whiteVSmall.webp'
+import logoPngBlk from '../images/ToResize/logo_whiteSmall.png'
 const Logo = () => {
   const { viewport } = useThree();
   const texture = useMemo(() => new THREE.TextureLoader().load(logoPngBlk), [logoPngBlk])

@@ -2,13 +2,13 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600);
 
 html {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 
 body {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   margin: 0;
   padding: 0;
   font-family: 'Open Sans', sans-serif;
@@ -17,8 +17,8 @@ body {
 }
 
 .container {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   margin: 0;
   padding: 0;
   transition: all 0.3s ease;
@@ -29,8 +29,8 @@ body.menu-active .container {
 }
 
 .container .inner {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -42,7 +42,7 @@ body.menu-active .container {
   display: block;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 100vw;
   height: 75px;
   margin: 0;
   margin-top: 2%;
@@ -88,6 +88,11 @@ body.menu-active .nav a.white {
   text-align: center;
 }
 
+text-link {
+  font-size: 5px !important;
+  font-weight: 100 !important;
+}
+
 .nav a.link i {
   position: absolute;
   display: block;
@@ -124,7 +129,7 @@ body.menu-active .nav a.white {
 .container .inner .panel {
   position: relative;
   box-sizing: border-box;
-  height: 100%;
+  height: 100vh;
   width: 60%;
   float: left;
   transform: skew(-20deg);
@@ -136,8 +141,8 @@ body.menu-active .nav a.white {
 
 .container .inner .panel .panel-content {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%) skew(20deg);
@@ -145,8 +150,8 @@ body.menu-active .nav a.white {
 
 .container .inner .panel.panel-left .panel-content .image-background {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   left: 50%;
   top: 50%;
   opacity: 0.95;
@@ -159,7 +164,7 @@ body.menu-active .nav a.white {
 
 .container .inner .panel.panel-right {
   margin-right: -10%;
-  background: #1B1B1B;
+  background: #0f0f0f;
 }
 
 .container .inner .panel.panel-right .panel-content .form {
@@ -274,8 +279,8 @@ a.send-btn:hover {
   position: fixed;
   top: 0;
   left: -100%;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   box-sizing: border-box;
   overflow-x: hidden;
   overflow-y: auto;
@@ -286,8 +291,8 @@ a.send-btn:hover {
 .menu::before {
   content: '';
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   position: absolute;
   top: 0;
   left: 0;

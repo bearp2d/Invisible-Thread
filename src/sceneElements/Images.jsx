@@ -12,14 +12,12 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
   const [selected, setSelected] = useState(-1);
 
   const selectImage = (key, y) => {
-
     setSelected(key);
     if (key > -1) {
       snap(true, y)
     } else {
       snap(false)
     }
-
   }
 
 
@@ -28,7 +26,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
   let degree = 0;
   const imageList = useMemo(() => imageLoader.materials.map(([i, material]) => {
 
-    let spread = 7;
+    let spread = 10;
     //console.log(left, right);
     //1
     if (left && right) {
@@ -43,7 +41,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
       degree = GetRandom(0, spread) + 135 - spread / 2;
       left = !left;
 
-    }else if(!left && !right){
+    } else if(!left && !right){
       //2
       degree = GetRandom(0, spread) + 215 - spread / 2;
       right = !right;
@@ -54,7 +52,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
     let radius = 2.5;
     let x = radius * Math.cos(rad);
     console.log(x)
-    let y = -2 - (i * 2);
+    let y = -5 - (i * 5);
     let z = 4.5 + radius * Math.sin(rad);
 
     // let x = radius * Math.cos(rad);

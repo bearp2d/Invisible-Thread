@@ -49,7 +49,7 @@ export default function useYScroll(bounds, props) {
     setRotationSpring({ rotationSpring: [40, 0, 0], config: { easing: easeQuadInOut, duration: 2000 } })
   }
   const Stage5 = () => {
-    setPositionSpring({ positionSpring: [0, 0, -20], config: { easing: easeQuadInOut, duration: 3000 } })
+    setPositionSpring({ positionSpring: [0, 0, -19], config: { easing: easeQuadInOut, duration: 3000 } })
     setRotationSpring({ rotationSpring: [0, 0, 0], config: { easing: easeQuadInOut, duration: 3000 } })
     setTimeout(function () {
       lock = false;
@@ -141,19 +141,19 @@ const UpStage2 = () => {
     }
   }
 let colors = ['#E1FFFC', '#E4E6F6', '#E9CDE0', '#DEB6C6', '#91707B'];
-  let r = 15;
-  let g = 15;
-  let b = 25;
+  let r = 0;
+  let g = 0;
+  let b = 0;
   let color = "";
   const fn2 = ({ xy: [, y] }) => {
     if(b < 253 && last < y) {
-      b += 1;
-      g += 1;
-      r += 1;
+      // b += 1;
+      // g += 1;
+      // r += 1;
     }else if(b > 2 && last > y){
-      b -= 1;
-      g -= 1;
-      r -= 1;
+      // b -= 1;
+      // g -= 1;
+      // r -= 1;
     }
       color = r.toString() + g.toString() + b.toString();
     document.getElementsByClassName('canvas')[0].style.backgroundColor ='rgb(' + r +  ',' + g + ',' + b + ')';

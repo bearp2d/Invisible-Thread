@@ -74,7 +74,7 @@ function Loading() {
 
 function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpring, setScroll, rotationSpring, setRotation, setScrollDown } }) {
   const { size, camera, scene } = useThree()
-  const scrollMax = size.height * 4.5
+  const scrollMax = size.height * 5.5
   const [snapped, setSnapped] = useState(false);
 
   const snap = useCallback((snapTo, newY) => {
@@ -134,6 +134,37 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
     // camera.position.lerp(cameraOffset, 0.8);
     // }
   })
+
+  /** This renders text via canvas and projects it as a sprite */
+  function Text({ children, position, opacity, color = 'white', fontSize = 410 }) {
+    const {
+      size: { width, height },
+      viewport: { width: viewportWidth, height: viewportHeight }
+    } = useThree()
+    const scale = viewportWidth > viewportHeight ? viewportWidth : viewportHeight
+    const canvas = useMemo(
+        () => {
+          const canvas = document.createElement('canvas')
+          canvas.width = canvas.height = 2048
+          const context = canvas.getContext('2d')
+          context.font = `${fontSize}px -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif`
+          context.textAlign = 'center'
+          context.textBaseline = 'middle'
+          context.fillStyle = color
+          context.fillText(children, 1024, 1024 - 410 / 2)
+          return canvas
+        },
+        [children, width, height]
+    )
+    return (
+        <a.sprite scale={[scale, scale, 1]} position={position}>
+          <a.spriteMaterial attach="material" transparent opacity={opacity}>
+            <canvasTexture attach="map" image={canvas} premultiplyAlpha onUpdate={s => (s.needsUpdate = true)} />
+          </a.spriteMaterial>
+        </a.sprite>
+    )
+  }
+
   return (
     <>
       {/* <a.spotLight intensity={1} distance={500} penumbra={0.0} angle={THREE.Math.degToRad(45)} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
@@ -141,7 +172,7 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
       <a.pointLight intensity={1} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
       <Effects factor={scrollSpring.interpolate([0, 150], [1, 0])} />
 
-       <Logo top={scrollSpring} />
+      <Logo top={scrollSpring} />
       <Stars2 position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} />
 
       <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} />
@@ -156,9 +187,9 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
       {/*<Background color={mouse.interpolate([0, 0, -50], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} />*/}
 
       <ContactForm/>
-      {/* <Text opacity={1} fontSize={210} >
-        Invisible Thread
-      </Text> */}
+      <Text opacity={1} position={[0,-4.3,0]} fontSize={20}>
+        SCROLL TO EXPLORE
+      </Text>
       {/* <Text opacity={1} position={top.interpolate(top => [0, -20 + ((top * 10) / scrollMax) * 2, 0])} fontSize={150}>
         Ipsum
       </Text> */}
