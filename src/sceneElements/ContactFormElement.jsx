@@ -9,8 +9,9 @@ export default function ContactFormElement() {
 
         <div className="nav">
           {/* <a href="#" className="menu-activator"><i className="ion-ios-more"></i></a>*/}
-          {/* <img src={logoPngBlk} style={{ width: '250px' }} /> */}
-          <a href="#" className="white link"><h6 className="text-link">RETURN TO BEGINNING</h6><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>
+           <img src={logoPngBlk} className="logo" style={{ width: '350px' }} />
+          <a href="#" className="white link"><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>
+          <h6 className="text-link">RETURN TO BEGINNING</h6>
         </div>
         <div className="container">
           <div className="inner">
@@ -37,7 +38,7 @@ export default function ContactFormElement() {
                   </div>
                   <br />
                   <div className="group">
-                    <input type="text" placeholder="Message" required />
+                    <textarea className="textArea" rows="4" cols="50" placeholder="Message" required />
                     {/*<span className="highlight"></span>*/}
                     {/*<label>Message</label>*/}
                   </div>

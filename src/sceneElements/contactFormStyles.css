@@ -88,6 +88,31 @@ body.menu-active .nav a.white {
   text-align: center;
 }
 
+.logo {
+  float: left;
+  position: relative;
+  text-align: center;
+  margin-top: 45vh;
+  margin-left: 35vh;
+}
+
+.textArea {
+  background-color: #0f0f0f;
+  font-family: 'Open Sans', sans-serif;
+  border: none;
+  font-size: 13px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  width: 300px;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #B1B1B1;
+  color: #B1B1B1;
+  background: rgba(0,0,0,0);
+  opacity: 0.5;
+  transition: 0.2s ease;
+}
+
 text-link {
   font-size: 5px !important;
   font-weight: 100 !important;

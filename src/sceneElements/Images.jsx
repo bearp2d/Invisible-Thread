@@ -26,7 +26,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
   let degree = 0;
   const imageList = useMemo(() => imageLoader.materials.map(([i, material]) => {
 
-    let spread = 10;
+    let spread = 20;
     //console.log(left, right);
     //1
     if (left && right) {
@@ -49,7 +49,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
     }
 
     let rad = THREE.Math.degToRad(degree)
-    let radius = 2.5;
+    let radius = 5.5;
     let x = radius * Math.cos(rad);
     console.log(x)
     let y = -5 - (i * 5);
@@ -85,7 +85,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
 /** This component loads an image and projects it onto a plane */
 export function Image({ url, opacity, startPosition, material, selected, selectImage, index, ...props }) {
 
-  const [sx, sy] = [2, 2]
+  const [sx, sy] = [4, 4]
 
   // useMemo(() => {
   //   return [1, 1];

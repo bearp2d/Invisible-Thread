@@ -33,7 +33,7 @@ function App() {
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
   const [loaded, setLoaded] = useState(false);
   const imageLoader = useMemo(() => new ImageLoader(data, setLoaded), [data])
-  const cameraControl = useYScroll([0, 50], { domTarget: window })
+  const cameraControl = useYScroll([0, 75], { domTarget: window })
   return (
     <>
       {
@@ -173,7 +173,7 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
       <Effects factor={scrollSpring.interpolate([0, 150], [1, 0])} />
 
       <Logo top={scrollSpring} />
-      <Stars2 position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} />
+      {/*<Stars2 position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} />*/}
 
       <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} />
       {/* <Stars position={[0, 0, 0]} /> */}
@@ -217,26 +217,26 @@ const Effects = React.memo(({ factor }) => {
     </effectComposer>
   )
 })
-function Stars2({ position }) {
-  let group = useRef()
-  let theta = 0
-  useRender(() => {
-    const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.005)))
-    const s = Math.cos(THREE.Math.degToRad(theta * 2))
-    group.current.rotation.set(r, r, r)
-    group.current.scale.set(s, s, s)
-  })
-  const [geo, mat, coords] = useMemo(() => {
-    const geo = new THREE.SphereBufferGeometry(0.4, 2, 2)
-    const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('peachpuff'), transparent: true })
-    const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
-    return [geo, mat, coords]
-  }, [])
-  return (
-      <a.group ref={group} position={position}>
-        {coords.map(([p1, p2, p3], i) => (
-            <mesh key={i} geometry={geo} material={mat} position={[p1, p2, p3]} />
-        ))}
-      </a.group>
-  )
-}
+// function Stars2({ position }) {
+//   let group = useRef()
+//   let theta = 0
+//   useRender(() => {
+//     const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.005)))
+//     const s = Math.cos(THREE.Math.degToRad(theta * 2))
+//     group.current.rotation.set(r, r, r)
+//     group.current.scale.set(s, s, s)
+//   })
+//   const [geo, mat, coords] = useMemo(() => {
+//     const geo = new THREE.SphereBufferGeometry(0.4, 2, 2)
+//     const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('peachpuff'), transparent: true })
+//     const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
+//     return [geo, mat, coords]
+//   }, [])
+//   return (
+//       <a.group ref={group} position={position}>
+//         {coords.map(([p1, p2, p3], i) => (
+//             <mesh key={i} geometry={geo} material={mat} position={[p1, p2, p3]} />
+//         ))}
+//       </a.group>
+//   )
+// }

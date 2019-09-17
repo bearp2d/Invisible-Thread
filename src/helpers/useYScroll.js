@@ -249,11 +249,11 @@ if(!lock) {
         friction: 300
       }
     })
-  } else if (pos > 5 && pos < 30) {
+  } else if (pos > 5 && pos < 55) {
     back1 = false;
     back2 = false;
     setPositionSpring({positionSpring: [0, pos, 5]})
-  } else if (pos >= 30 && !lock && !stage2 && stage1 && !back2) {
+  } else if (pos >= 55 && !lock && !stage2 && stage1 && !back2) {
     stage2 = true;
   }
 }
