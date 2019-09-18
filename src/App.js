@@ -143,7 +143,7 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
       <Effects factor={scrollSpring.interpolate([0, 150], [1, 0])} />
 
       {/* <Logo top={scrollSpring} /> */}
-      <Stars position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} />
+      <Stars position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} imageLoader={imageLoader} />
 
       <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} />
       {/* <Stars position={[0, 0, 0]} /> */}

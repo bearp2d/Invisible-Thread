@@ -2,6 +2,7 @@ import * as THREE from 'three/src/Three'
 
 export default class ImageLoader {
     materials: Array<[number, THREE.MeshLambertMaterial]> = [];
+    textures: Array<[number, THREE.Texture]> = [];
     manager: THREE.LoadingManager;
     i: number = 0;
     finished: boolean = false;
@@ -19,11 +20,12 @@ export default class ImageLoader {
 
     onLoad(texture: THREE.Texture, materials: Array<[number, THREE.MeshLambertMaterial]>, url: string ) {
         console.log(url);
-        let mat = new THREE.MeshLambertMaterial({ map: texture, transparent: true })
+        let mat = new THREE.MeshLambertMaterial({ map: texture, transparent: true })        
         mat.needsUpdate = true;
         mat.onBeforeCompile = () => {
             console.log('Load Mat');            
         }
+        this.textures.push([this.i, texture]);
         materials.push([this.i++, mat]);
     }
 

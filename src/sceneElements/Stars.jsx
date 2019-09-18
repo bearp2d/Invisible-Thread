@@ -5,8 +5,7 @@ import { a } from 'react-spring/three'
 import { GetRandom } from './HelperFuncitons'
 
 // /** This component rotates a bunch of stars */
-export default function Stars({ position, scrollSpring }) {
-
+export default function Stars({ position, scrollSpring, imageLoader }) {  
 
   const vertexShader = `
   precision highp float;
@@ -26,13 +25,17 @@ export default function Stars({ position, scrollSpring }) {
   varying float vDistance;
   varying float vWDistance;
   varying vec3 vCameraPosition;
+  // varying vec2 vTexcoords;
+  varying vec2 vUv;
+
 
   void main() {
+    vUv = uv;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
     vDistance = distance(gl_Position, vec4(0.,0.,0.,0.));
     vPosition = position;
     vWDistance = distance(position, cameraPosition);
-    vCameraPosition = cameraPosition;
+    vCameraPosition = cameraPosition;    
   }
   `
   const fragmentShader = `
@@ -41,17 +44,22 @@ export default function Stars({ position, scrollSpring }) {
   uniform float offset;
   uniform vec3 color;
   uniform float speed;
-  uniform sampler2D matCap;
+  // uniform sampler2D matCap;
+  uniform sampler2D texture;
   varying vec3 vPosition;
   varying float vDistance;
   varying float vWDistance;
   varying vec3 vCameraPosition;
+  varying vec2 vUv;
 
   void main(){  
     // gl_FragColor = vec4(1.,0,0,1.);
     // gl_FragColor = vec4(vWDistance / 100. + time / 20., 0., 0., 0.);
     // gl_FragColor = vec4(offset / 40., 0., 0., 0.);
-    gl_FragColor = vec4(-20. + vPosition.x + offset, 0., 0., 0.);
+    // gl_FragColor = vec4(-20. + vPosition.x + offset, 0., 0., 0.);
+    // gl_FragColor = color;
+    // gl_FragColor = vec4(vUv.x, 0., 0., 0.);
+    gl_FragColor = texture2D(texture, vUv);
   }
   `
 
@@ -89,14 +97,15 @@ export default function Stars({ position, scrollSpring }) {
         time: { value: 0 },
         speed: { value: 1 },
         offset: { value: 0 },
-        color: { value: new THREE.Color(0x455b69) }
-        //matCap: { value: loader.load("./assets/matcap3.jpg") }
+        color: { value: new THREE.Color(0x455b69) },        
+        texture: { type: "t", value: imageLoader.textures[0][1] }
       },
       vertexShader,
       fragmentShader,
-      wireframe: true,
+      wireframe: false,
       side: THREE.DoubleSide
-    })
+    })    
+    
 
     // const coords = new Array(100).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
     const coords = new Array(1).fill().map(i => [0, 0, 0])
