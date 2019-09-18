@@ -1,3 +1,4 @@
+import noise from './images/noise.webp'
 import img1 from './images/resizes/accelerate2.webp'
 import img2 from './images/resizes/bloody1.jpg'
 import img3 from './images/resizes/crop-1.jpg'
@@ -14,6 +15,7 @@ import img13 from './images/resizes/abstract_2.jpg'
 import img14 from './images/resizes/abstract_3.jpg'
 
 export default [
+  noise,
   img1,
   img4,
   img2,
