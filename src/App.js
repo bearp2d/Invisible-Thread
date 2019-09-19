@@ -33,7 +33,7 @@ function App() {
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
   const [loaded, setLoaded] = useState(false);
   const imageLoader = useMemo(() => new ImageLoader(data, setLoaded), [data])
-  const cameraControl = useYScroll([0, 50], { domTarget: window })
+  const cameraControl = useYScroll([0, 75], { domTarget: window })
   return (
     <>
       {
@@ -43,7 +43,7 @@ function App() {
               <Scene mouse={mouse} cameraControl={cameraControl} imageLoader={imageLoader} />
             </Canvas>
             <aDom.div className="bar" style={{ height: cameraControl.scrollSpring.interpolate([0, 50], ['0%', '100%']) }} />
-
+            {/*<Logo id="logoSm"/>*/}
             <ContactFormElement />
           </>
           :
@@ -74,7 +74,7 @@ function Loading() {
 
 function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpring, setScroll, rotationSpring, setRotation, setScrollDown } }) {
   const { size, camera, scene } = useThree()
-  const scrollMax = size.height * 4.5
+  const scrollMax = size.height * 5.5
   const [snapped, setSnapped] = useState(false);
 
   const snap = useCallback((snapTo, newY) => {
@@ -135,6 +135,36 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
     // }
   })
 
+  /** This renders text via canvas and projects it as a sprite */
+  function Text({ children, position, opacity, color = 'white', fontSize = 410 }) {
+    const {
+      size: { width, height },
+      viewport: { width: viewportWidth, height: viewportHeight }
+    } = useThree()
+    const scale = viewportWidth > viewportHeight ? viewportWidth : viewportHeight
+    const canvas = useMemo(
+        () => {
+          const canvas = document.createElement('canvas')
+          canvas.width = canvas.height = 2048
+          const context = canvas.getContext('2d')
+          context.font = `${fontSize}px -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif`
+          context.textAlign = 'center'
+          context.textBaseline = 'middle'
+          context.fillStyle = color
+          context.fillText(children, 1024, 1024 - 410 / 2)
+          return canvas
+        },
+        [children, width, height]
+    )
+    return (
+        <a.sprite scale={[scale, scale, 1]} position={position}>
+          <a.spriteMaterial attach="material" transparent opacity={opacity}>
+            <canvasTexture attach="map" image={canvas} premultiplyAlpha onUpdate={s => (s.needsUpdate = true)} />
+          </a.spriteMaterial>
+        </a.sprite>
+    )
+  }
+
   return (
     <>
       {/* <a.spotLight intensity={1} distance={500} penumbra={0.0} angle={THREE.Math.degToRad(45)} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} /> */}
@@ -142,23 +172,24 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
       <a.pointLight intensity={1} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
       <Effects factor={scrollSpring.interpolate([0, 150], [1, 0])} />
 
-      {/* <Logo top={scrollSpring} /> */}
+      <Logo top={scrollSpring} />
       <Stars position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} imageLoader={imageLoader} />
 
-      <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} />
+      <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} opacity={.5} />
       {/* <Stars position={[0, 0, 0]} /> */}
 
-      <mesh castShadow receiveShadow position={[0, -10, 0]} >
-        <boxGeometry attach="geometry" args={[2, 2, 2]} />
-        <meshStandardMaterial attach="material" />
-      </mesh>
+      {/*<mesh castShadow receiveShadow position={[0, -10, 0]} >*/}
+      {/*  <boxGeometry attach="geometry" args={[2, 2, 2]} />*/}
+      {/*  <meshStandardMaterial attach="material" />*/}
+      {/*</mesh>*/}
 
       {/* <Thing  position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])}/> */}
-      {/* <Background color={positionY.interpolate([0, scrollMax * 0.25, scrollMax * 0.8, scrollMax], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} /> */}
-      {/* <ContactForm /> */}
-      {/* <Text opacity={1} fontSize={210} >
-        Invisible Thread
-      </Text> */}
+      {/*<Background color={mouse.interpolate([0, 0, -50], ['#27282F', '#247BA0', '#70C1B3', '#f8f3f1'])} />*/}
+
+      <ContactForm/>
+      <Text opacity={1} position={[0,-4.3,0]} fontSize={20}>
+        SCROLL TO EXPLORE
+      </Text>
       {/* <Text opacity={1} position={top.interpolate(top => [0, -20 + ((top * 10) / scrollMax) * 2, 0])} fontSize={150}>
         Ipsum
       </Text> */}
@@ -178,11 +209,34 @@ const Effects = React.memo(({ factor }) => {
     <effectComposer ref={composer} args={[gl]}>
       {/* Main Pass that renders the Scene */}
       <renderPass attachArray="passes" args={[scene, camera]} />
-      {/* <a.waterPass attachArray="passes" factor={1} renderToScreen /> */}
+       {/*<a.waterPass attachArray="passes" factor={1} renderToScreen />*/}
 
-      {/* <a.unrealBloomPass attachArray="passes" factor={factor} renderToScreen /> */}
+       {/*<a.unrealBloomPass attachArray="passes" factor={1} renderToScreen />*/}
       {/* Effect Passes renderToScreen draws current pass to screen*/}
       <a.glitchPass attachArray="passes" renderToScreen factor={factor} />
     </effectComposer>
   )
 })
+// function Stars2({ position }) {
+//   let group = useRef()
+//   let theta = 0
+//   useRender(() => {
+//     const r = 5 * Math.sin(THREE.Math.degToRad((theta += 0.005)))
+//     const s = Math.cos(THREE.Math.degToRad(theta * 2))
+//     group.current.rotation.set(r, r, r)
+//     group.current.scale.set(s, s, s)
+//   })
+//   const [geo, mat, coords] = useMemo(() => {
+//     const geo = new THREE.SphereBufferGeometry(0.4, 2, 2)
+//     const mat = new THREE.MeshBasicMaterial({ color: new THREE.Color('peachpuff'), transparent: true })
+//     const coords = new Array(1000).fill().map(i => [Math.random() * 800 - 400, Math.random() * 800 - 400, Math.random() * 800 - 400])
+//     return [geo, mat, coords]
+//   }, [])
+//   return (
+//       <a.group ref={group} position={position}>
+//         {coords.map(([p1, p2, p3], i) => (
+//             <mesh key={i} geometry={geo} material={mat} position={[p1, p2, p3]} />
+//         ))}
+//       </a.group>
+//   )
+// }
