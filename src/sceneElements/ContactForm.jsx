@@ -8,10 +8,8 @@ export default function ContactForm() {
     let { scene, gl, camera } = useThree();
 
     var material = new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true, wireframeLinewidth: 1, side: THREE.DoubleSide });
-    useEffect(() => {
-      // var element = document.createElement('div');
-      var element = document.getElementById('contact-form');
-      // element.style.zIndex = '0';
+    useEffect(() => {      
+      var element = document.getElementById('contact-form');      
       element.style.width = '100vw';
       element.style.height = '100vh';
       element.style.background = '#ffffff';
@@ -22,11 +20,7 @@ export default function ContactForm() {
       var object = new CSS3DObject(element);
       object.position.x = 0;
       object.position.y = 0;
-      object.position.z = -26;
-      // /object.rotation.z = THREE.Math.degToRad(180);
-      // object.rotation.x = Math.random();
-      // object.rotation.y = Math.random();
-      // object.rotation.z = Math.random();
+      object.position.z = -26;      
       object.scale.x = 0.01;
       object.scale.y = 0.01;
       scene.add(object);
@@ -38,7 +32,7 @@ export default function ContactForm() {
       renderer.domElement.style.position = 'absolute'
       renderer.domElement.style.zIndex = '0';
       renderer.domElement.style.top = '0';
-      // renderer.domElement.style.pointerEvents = 'none'
+      renderer.domElement.style.pointerEvents = 'none'
       document.body.appendChild(renderer.domElement);
 
       window.addEventListener( 'resize', onWindowResize, false );

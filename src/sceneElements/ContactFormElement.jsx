@@ -4,7 +4,6 @@ import '../sceneElements/contactFormStyles.css';
 
 export default function ContactFormElement() {
   return (
-    <div>
       <div id={'contact-form'} className={'panel-3d'}>
 
         <div className="nav">
@@ -50,10 +49,7 @@ export default function ContactFormElement() {
           </div>
         </div>
         <div className="menu"></div>
-
-
-      </div>
-    </div>
+      </div>    
   )
 }
 

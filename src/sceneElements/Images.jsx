@@ -6,11 +6,8 @@ import { Vector3 } from 'three/src/Three';
 import { GetRandom } from './HelperFuncitons'
 
 //Image object
-export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {
-  //Load images from data.js
-
+export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {  
   const [selected, setSelected] = useState(-1);
-
   const selectImage = (key, y) => {
     setSelected(key);
     if (key > -1) {
@@ -50,8 +47,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {
 
     let rad = THREE.Math.degToRad(degree)
     let radius = 5.5;
-    let x = radius * Math.cos(rad);
-    console.log(x)
+    let x = radius * Math.cos(rad);    
     let y = -5 - (i * 5);
     let z = 4.5 + radius * Math.sin(rad);
 
@@ -63,8 +59,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {
     return [startPosition, material];
   }), [data])
 
-  return imageList.map(([[x, y, z], material], index) => (
-      <>
+  return imageList.map(([[x, y, z], material], index) => (      
     <Image
       snap={snap}
       rotation={new THREE.Euler(THREE.Math.degToRad(-90)).toArray()}
@@ -76,8 +71,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {
       // opacity={top.interpolate([0, 500], [0, 1])}
       // opacity={.2}
       startPosition={new Vector3(x, y, z)}
-    />
-        </>
+    />        
   ))
 
 }

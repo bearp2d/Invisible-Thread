@@ -274,7 +274,7 @@ if(!lock) {
   }
 }
    // console.log(lock)
-   console.log(pos);
+  //  console.log(pos);
 
     //lock = (pos > 1 && pos < max);
   }
