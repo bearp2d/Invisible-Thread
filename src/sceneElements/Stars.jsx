@@ -25,8 +25,8 @@ export default function Stars({ position, imageLoader }) {
     vec2 uvOS = vUv / vec2(4., 4.) + vec2(offset / 4., 0.);
     vec4 texColor = texture2D(texture, uvOS);
     float c = step(0.55, texColor.r);
-    // gl_FragColor = vec4(texColor.rgb, texColor.r - .5);
-    gl_FragColor = vec4(1., 1., 1., 1.);
+    gl_FragColor = vec4(texColor.rgb, texColor.r - .5);
+    // gl_FragColor = vec4(1., 1., 1., 1.);
   }
   `
   let group = useRef()
