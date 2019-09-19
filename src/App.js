@@ -27,7 +27,7 @@ function App() {
   const onMouseMove = useCallback(({ clientX: x, clientY: y }) => set({ mouse: [x - window.innerWidth / 2, y - window.innerHeight / 2] }), []);
   const [loaded, setLoaded] = useState(false);
   const imageLoader = useMemo(() => new ImageLoader(data, setLoaded), [data])
-  const cameraControl = useYScroll([0, 75], { domTarget: window })
+  const cameraControl = useYScroll([0, 100], { domTarget: window })
   return (
     <>
       {
@@ -36,8 +36,8 @@ function App() {
             <Canvas className="canvas" onMouseMove={onMouseMove}>
               <Scene mouse={mouse} cameraControl={cameraControl} imageLoader={imageLoader} />
             </Canvas>
-            <aDom.div className="bar" style={{ height: cameraControl.scrollSpring.interpolate([0, 75], ['0%', '100%']) }} />
-            {/*<Logo id="logoSm"/>*/}
+            <aDom.div className="bar" style={{ height: cameraControl.scrollSpring.interpolate([0, 100], ['0%', '100%']) }} />
+            {/* <Logo id="logoSm"/> */}
             <ContactFormElement />
           </>
           :
@@ -66,7 +66,7 @@ function Loading() {
 }
 
 
-function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpring, setScroll, rotationSpring, setRotation, setScrollDown } }) {
+function Scene({ imageLoader, mouse, cameraControl: { getPosition, scrollSpring, setScroll, getRotation, updateScroll } }) {
   const { size, camera, scene } = useThree()
   const scrollMax = size.height * 5.5
   const [snapped, setSnapped] = useState(false);
@@ -82,8 +82,8 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
   }, [setScroll])
 
   useRender(() => {
-    const [posX, posY, posZ] = positionSpring.getValue();
-    const [rotX, rotY, rotZ] = rotationSpring.getValue();
+    const [posX, posY, posZ] = getPosition();
+    const [rotX, rotY, rotZ] = getRotation();
     // const posY = positionY.getValue();
     // const posZ = positionZ.getValue();
     // const rot = rotation.getValue();
@@ -94,7 +94,7 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
     // }
     // console.log(rot, pos);
 
-    setScrollDown();
+    updateScroll();
     camera.rotation.x = THREE.Math.degToRad(rotX);
     camera.rotation.y = THREE.Math.degToRad(rotY);
     camera.rotation.z = THREE.Math.degToRad(rotZ);
@@ -115,7 +115,7 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
     <>
       <a.pointLight intensity={1} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
       {/* <Effects factor={scrollSpring.interpolate([0, 150], [1, 0])} /> */}
-      <Logo top={scrollSpring} />
+      <Logo />
       <Stars position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} imageLoader={imageLoader} />
       <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} opacity={.5} />
       <ContactForm />
