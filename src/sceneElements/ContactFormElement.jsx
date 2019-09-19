@@ -9,7 +9,6 @@ export default function ContactFormElement() {
 
         <div className="nav">
           {/* <a href="#" className="menu-activator"><i className="ion-ios-more"></i></a>*/}
-           <img src={logoPngBlk} className="logo" style={{ width: '350px' }} />
           <a href="#" className="white link"><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>
           <h6 className="text-link">RETURN TO BEGINNING</h6>
         </div>
@@ -17,6 +16,7 @@ export default function ContactFormElement() {
           <div className="inner">
             <div className="panel panel-left">
               <div className="panel-content">
+                <img src={logoPngBlk} className="logo" style={{ width: '20vw' }} />
                 <div className="image-background">
                 </div>
               </div>

@@ -3,6 +3,8 @@ import { useSpring, config } from '@react-spring/core'
 import { useGesture } from 'react-use-gesture'
 import clamp from 'lodash/clamp'
 import { easeQuadInOut, easeCircleInOut, easeSinInOut, easeExpInOut, easeQuadIn, easeQuadOut, easePolyInOut, easeBackInOut, easeCubicInOut } from 'd3-ease'
+// import Logo from 0
+//     .0'../sceneElements/Logo'
 
 export default function useYScroll(bounds, props) {
   let lock = false;
@@ -14,6 +16,8 @@ export default function useYScroll(bounds, props) {
   let back2 = false;
   let back3 = false;
   let formHidden = true;
+  let logoHidden = true;
+
   const [{ scrollSpring }, setScrollSpring] = useSpring(() => ({ scrollSpring: 0, config: config.default}));
   const [{ positionSpring }, setPositionSpring] = useSpring(() => ({
     positionSpring: [0, 0, 5], config: {
@@ -65,8 +69,20 @@ export default function useYScroll(bounds, props) {
   const FormHide = () => {
     var element = document.getElementById('contact-form');
     element.style.opacity = '0';
-    formHidden = true;
+   formHidden = true;
   }
+
+  // const LogoShow = () => {
+  //   var element = Logo;
+  //   element.style.opacity = '1';
+  //   logoHidden = false;
+  // }
+  // const LogoHide = () => {
+  //   var element = Logo;
+  //   element.style.opacity = '0';
+  //   logoHidden = true;
+  // }
+
 const UpStage1 = () => {
     lock = true;
     back2 = true;
@@ -110,7 +126,7 @@ const UpStage2 = () => {
 
 
   const startAnimationDown = () => {
-    Stage1()
+    Stage1();
     setTimeout(Stage2, 2000);
     // setTimeout(Stage3, 4000);
     // setTimeout(Stage4, 10000);

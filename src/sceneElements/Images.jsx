@@ -6,7 +6,7 @@ import { Vector3 } from 'three/src/Three';
 import { GetRandom } from './HelperFuncitons'
 
 //Image object
-export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
+export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {
   //Load images from data.js
 
   const [selected, setSelected] = useState(-1);
@@ -74,7 +74,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
       selected={selected}
       selectImage={selectImage}
       // opacity={top.interpolate([0, 500], [0, 1])}
-      opacity={1}
+      // opacity={.2}
       startPosition={new Vector3(x, y, z)}
     />
         </>
@@ -85,7 +85,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader }) {
 /** This component loads an image and projects it onto a plane */
 export function Image({ url, opacity, startPosition, material, selected, selectImage, index, ...props }) {
 
-  const [sx, sy] = [4, 4]
+  const [sx, sy] = [6, 4]
 
   // useMemo(() => {
   //   return [1, 1];
@@ -114,6 +114,7 @@ export function Image({ url, opacity, startPosition, material, selected, selectI
   const hover = useCallback(e => {
     e.stopPropagation();
     setHover(true)
+    opacity=1
   }, [])
   const unhover = useCallback(e => {
     setHover(false)
@@ -144,7 +145,7 @@ export function Image({ url, opacity, startPosition, material, selected, selectI
     <a.mesh {...props}
       position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
       onPointerUp={toggle}
-      // onPointerOver={hover} onPointerOut={unhover}
+      onPointerOver={hover} onPointerOut={unhover}
       scale={[sx, sy, 1]}
       material={material}
       frustumCulled={false}

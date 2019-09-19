@@ -43,7 +43,7 @@ function App() {
               <Scene mouse={mouse} cameraControl={cameraControl} imageLoader={imageLoader} />
             </Canvas>
             <aDom.div className="bar" style={{ height: cameraControl.scrollSpring.interpolate([0, 50], ['0%', '100%']) }} />
-
+            {/*<Logo id="logoSm"/>*/}
             <ContactFormElement />
           </>
           :
@@ -175,7 +175,7 @@ function Scene({ imageLoader, mouse, cameraControl: { positionSpring, scrollSpri
       <Logo top={scrollSpring} />
       {/*<Stars2 position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} />*/}
 
-      <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} />
+      <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} opacity={.5} />
       {/* <Stars position={[0, 0, 0]} /> */}
 
       {/*<mesh castShadow receiveShadow position={[0, -10, 0]} >*/}

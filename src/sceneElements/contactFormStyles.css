@@ -89,11 +89,12 @@ body.menu-active .nav a.white {
 }
 
 .logo {
-  float: left;
+  /*float: left;*/
   position: relative;
   text-align: center;
   margin-top: 45vh;
-  margin-left: 35vh;
+  margin-left: 5vw;
+  margin-right: 5vw;
 }
 
 .textArea {
