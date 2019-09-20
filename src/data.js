@@ -1,4 +1,6 @@
 import noise from './images/noise.webp'
+import logoPngBlk from './images/ToResize/logo_whiteSmall.png'
+
 import img1 from './images/resizes/accelerate2.webp'
 import img2 from './images/resizes/bloody1.jpg'
 import img3 from './images/resizes/crop-1.jpg'
@@ -14,16 +16,20 @@ import img12 from './images/resizes/abstract_1.jpg'
 import img13 from './images/resizes/abstract_2.jpg'
 import img14 from './images/resizes/abstract_3.jpg'
 
+//0 Image
+//1 Video
+//2 Logo
+//3 Noise
+
 export default [
+  logoPngBlk,
   noise,
   img1,
   img4,
   img2,
   img3,
-  
   img5,
   img6,
-  
   img7,
   img8,
   img9,

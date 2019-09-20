@@ -21,7 +21,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {
   let left = false
   let right = true;
   let degree = 0;
-  const imageList = useMemo(() => imageLoader.materials.map(([i, material]) => {
+  const imageList = useMemo(() => imageLoader.textures.map((texture, i) => {
 
     let spread = 20;
     //console.log(left, right);
@@ -42,7 +42,6 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {
       //2
       degree = GetRandom(0, spread) + 215 - spread / 2;
       right = !right;
-
     }
 
     let rad = THREE.Math.degToRad(degree)
@@ -56,16 +55,16 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {
     // let y = 5 + radius * Math.sin(rad);
 
     let startPosition = [x, y, z]
-    return [startPosition, material];
-  }), [data])
+    return [startPosition, texture];
+  }), [imageLoader])
 
-  return imageList.map(([[x, y, z], material], index) => (      
+  return imageList.map(([[x, y, z], texture], index) => (      
     <Image
       snap={snap}
       rotation={new THREE.Euler(THREE.Math.degToRad(-90)).toArray()}
       key={index}
       index={index}
-      material={material}
+      texture={texture}
       selected={selected}
       selectImage={selectImage}
       // opacity={top.interpolate([0, 500], [0, 1])}
@@ -77,7 +76,7 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {
 }
 
 /** This component loads an image and projects it onto a plane */
-export function Image({ url, opacity, startPosition, material, selected, selectImage, index, ...props }) {
+export function Image({ url, opacity, startPosition, texture, selected, selectImage, index, ...props }) {
 
   const [sx, sy] = [6, 4]
 
@@ -140,8 +139,7 @@ export function Image({ url, opacity, startPosition, material, selected, selectI
       position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
       onPointerUp={toggle}
       onPointerOver={hover} onPointerOut={unhover}
-      scale={[sx, sy, 1]}
-      material={material}
+      scale={[sx, sy, 1]}      
       frustumCulled={false}
       onAfterRender={() => {
         this.frustumCulled = true;
@@ -151,9 +149,9 @@ export function Image({ url, opacity, startPosition, material, selected, selectI
       {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
       <planeGeometry attach="geometry" args={[1, 1, 1]} />
       {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
-      {/* <a.meshLambertMaterial attach="material" transparent opacity={opacity}>
+      <a.meshLambertMaterial attach="material" transparent>
         <primitive attach="map" object={texture} />
-      </a.meshLambertMaterial> */}
+      </a.meshLambertMaterial>
     </a.mesh>
   )
 }

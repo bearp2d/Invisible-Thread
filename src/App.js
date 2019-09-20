@@ -115,7 +115,7 @@ function Scene({ imageLoader, mouse, cameraControl: { getPosition, scrollSpring,
     <>
       <a.pointLight intensity={1} color="white" position={mouse.interpolate((x, y) => [x / 100, -y / 100, 6.5])} />
       {/* <Effects factor={scrollSpring.interpolate([0, 150], [1, 0])} /> */}
-      <Logo />
+      <Logo imageLoader={imageLoader}/>
       <Stars position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} imageLoader={imageLoader} />
       <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} opacity={.5} />
       <ContactForm />

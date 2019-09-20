@@ -48,7 +48,7 @@ export default function Stars({ position, imageLoader }) {
           speed: { value: 1 },
           offset: { value: 0 },
           color: { value: new THREE.Color(0x00ff00) },
-          texture: { type: "t", value: imageLoader.textures[0][1] }
+          texture: { type: "t", value: imageLoader.noise }
         },
         vertexShader,
         vertexColors: THREE.VertexColors,

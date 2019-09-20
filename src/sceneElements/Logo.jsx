@@ -5,16 +5,16 @@ import { useThree } from 'react-three-fiber'
 // import { Vector3 } from 'three/src/Three';
 // import { Image } from './Images'
 // import logo from '../images/thisSVG.svg'
-import logoPngBlk from '../images/ToResize/logo_whiteSmall.png'
-const Logo = () => {
+// import logoPngBlk from '../images/ToResize/logo_whiteSmall.png'
+const Logo = ({ imageLoader }) => {
   const { viewport } = useThree();
-  const texture = useMemo(() => new THREE.TextureLoader().load(logoPngBlk), [logoPngBlk])
+  // const texture = useMemo(() => new THREE.TextureLoader().load(logoPngBlk), [logoPngBlk])
 
   return (
     <>
       <a.mesh
         position={[0, 0, 0]}
-        scale={[viewport.width, viewport.height, 1]}>      
+        scale={[viewport.width, viewport.height, 1]}>
         <planeGeometry attach="geometry" args={[1, 1]} />
         <a.meshBasicMaterial attach="material" color={'black'} depthTest={true} />
       </a.mesh>
@@ -27,7 +27,7 @@ const Logo = () => {
         {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
         {/* <a.meshBasicMaterial attach="material" color={'blue'} depthTest={false} /> */}
         <a.meshLambertMaterial attach="material" transparent opacity={1} depthTest={true}>
-          <primitive attach="map" object={texture} />
+          <primitive attach="map" object={imageLoader.logo} />
         </a.meshLambertMaterial>
       </a.mesh>
     </>
