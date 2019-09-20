@@ -66,7 +66,7 @@ function Loading() {
 }
 
 
-function Scene({ imageLoader, mouse, cameraControl: { getPosition, scrollSpring, setScroll, getRotation, updateScroll } }) {
+function Scene({ imageLoader, mouse, cameraControl: { getPosition, scrollSpring, setScroll, getRotation, updateScroll, getFormPosition } }) {
   const { size, camera, scene } = useThree()
   const scrollMax = size.height * 5.5
   const [snapped, setSnapped] = useState(false);
@@ -117,8 +117,8 @@ function Scene({ imageLoader, mouse, cameraControl: { getPosition, scrollSpring,
       {/* <Effects factor={scrollSpring.interpolate([0, 150], [1, 0])} /> */}
       <Logo imageLoader={imageLoader}/>
       <Stars position={[0, 0, -50]} depthTest={false} scrollSpring={scrollSpring} imageLoader={imageLoader} />
-      <Images top={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} opacity={.5} />
-      <ContactForm />
+      <Images scrollSpring={scrollSpring} mouse={mouse} scrollMax={scrollMax} snap={snap} imageLoader={imageLoader} opacity={.5} />
+      <ContactForm getFormPosition={getFormPosition} />
       {/* <Text opacity={1} position={[0,-4.3,0]} fontSize={14}>
         SCROLL TO EXPLORE
       </Text> */}

@@ -16,11 +16,6 @@ import img12 from './images/resizes/abstract_1.jpg'
 import img13 from './images/resizes/abstract_2.jpg'
 import img14 from './images/resizes/abstract_3.jpg'
 
-//0 Image
-//1 Video
-//2 Logo
-//3 Noise
-
 export default [
   logoPngBlk,
   noise,
@@ -37,5 +32,5 @@ export default [
   img11,
   img12,
   img13,
-  img14,
+  img14,  
 ]

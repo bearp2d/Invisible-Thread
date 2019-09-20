@@ -7,6 +7,8 @@ import { easeQuadInOut, easeCircleInOut, easeSinInOut, easeExpInOut, easeQuadIn,
 export default function useYScroll(bounds, props) {
   let position = [0, 0, 5];
   let rotation = [0, 0, 0];
+  let formPosition = [0, -50, 5];
+  // let formPosition = [0, 0, 0];
 
   const [{ scrollSpring }, setScrollSpring] = useSpring(() => ({ scrollSpring: 0, config: config.molasses }));
 
@@ -33,7 +35,7 @@ export default function useYScroll(bounds, props) {
     return scroll
     // }
   }
-  
+
   const fn2 = ({ xy: [, y] }) => {
 
     // if (last > y && back1 && !stage3 && stage1) {
@@ -68,6 +70,10 @@ export default function useYScroll(bounds, props) {
     return position;
   }
 
+  const getFormPosition = () => {
+    return formPosition;
+  }
+
   const updateScroll = e => {
     const pos = scrollSpring.getValue();
     if (pos >= 0 && pos <= 20) {
@@ -80,16 +86,21 @@ export default function useYScroll(bounds, props) {
       rotation = [-10 + e * -80, 0, 0];
 
     } else if (pos > 40 && pos <= 90) {
-      let e = (pos - 40) / 40;
-      position = [0, e * 60, 5];
-      rotation = [-90, 0, 0];      
-    }    
-    
+      let e = (pos - 40) / 50;
+      position = [0, e * 40, 5];
+      rotation = [-90, 0, 0];
+
+    } else if (pos > 90 && pos <= 100) {
+      let e = easeQuadOut((pos - 90) / 10);
+      position = [0, 40 + e * 5, 5];
+      rotation = [-90, 0, 0];
+    }
+
     if (scroll >= 0 && scroll < 40) {
       if (scrollDirection === 1) {
-        setScrollSpring({ scrollSpring: scroll -= 0.1 })        
+        setScrollSpring({ scrollSpring: scroll -= 0.125 })
       } else if (scrollDirection === 0) {
-        setScrollSpring({ scrollSpring: scroll += 0.1 })
+        setScrollSpring({ scrollSpring: scroll += 0.125 })
       }
     }
     if (scroll <= 0.1) {
@@ -97,7 +108,7 @@ export default function useYScroll(bounds, props) {
       scrollDirection = -1;
     }
 
-    if (scroll >= 40) {      
+    if (scroll >= 40) {
       scrollDirection = -1;
     }
 
@@ -114,5 +125,5 @@ export default function useYScroll(bounds, props) {
   const bind = useGesture({ onWheel: fn2, onDrag: fn, onDragStart: startDrag, onDragEnd: endDrag }, props)
   useEffect(() => props && props.domTarget && bind(), [props, bind])
 
-  return { getPosition, scrollSpring, setScroll, getRotation, updateScroll }
+  return { getPosition, scrollSpring, setScroll, getRotation, updateScroll, getFormPosition }
 }

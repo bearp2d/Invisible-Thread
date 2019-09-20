@@ -4,9 +4,10 @@ import { useSpring, a } from 'react-spring/three'
 import data from '../data'
 import { Vector3 } from 'three/src/Three';
 import { GetRandom } from './HelperFuncitons'
+import { useRender } from 'react-three-fiber';
 
 //Image object
-export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {  
+export function Images({ scrollSpring, mouse, scrollMax, snap, imageLoader }) {  
   const [selected, setSelected] = useState(-1);
   const selectImage = (key, y) => {
     setSelected(key);
@@ -68,7 +69,8 @@ export function Images({ top, mouse, scrollMax, snap, imageLoader, opacity }) {
       selected={selected}
       selectImage={selectImage}
       // opacity={top.interpolate([0, 500], [0, 1])}
-      // opacity={.2}
+      // opacity={scrollSpring.interpolate([20, 500], [0, 1])}      
+      opacity={1}      
       startPosition={new Vector3(x, y, z)}
     />        
   ))
@@ -104,14 +106,14 @@ export function Image({ url, opacity, startPosition, texture, selected, selectIm
 
   const [hovered, setHover] = useState(false)
 
-  const hover = useCallback(e => {
-    e.stopPropagation();
-    setHover(true)
-    opacity=1
-  }, [])
-  const unhover = useCallback(e => {
-    setHover(false)
-  }, [])
+  // const hover = useCallback(e => {
+  //   e.stopPropagation();
+  //   setHover(true)
+  //   opacity=1
+  // }, [])
+  // const unhover = useCallback(e => {
+  //   setHover(false)
+  // }, [])
 
   const toggle = e => {
     e.stopPropagation();
@@ -132,24 +134,26 @@ export function Image({ url, opacity, startPosition, texture, selected, selectIm
       // velocity: 5
     }
   })
+
+  // useRender(() =>{
+  //   opacity = 
+  // })
   // const mat = new THREE.MeshBasicMaterial({color: 'blue'});
 
   return (
     <a.mesh {...props}
       position={position.interpolate((x, y, z) => [x, y, z], 0.1)}
       onPointerUp={toggle}
-      onPointerOver={hover} onPointerOut={unhover}
+      // onPointerOver={hover} onPointerOut={unhover}
       scale={[sx, sy, 1]}      
       frustumCulled={false}
       onAfterRender={() => {
         this.frustumCulled = true;
         this.onAfterRender = function(){};
       }}
-      >
-      {/* <planeBufferGeometry attach="geometry" args={[5, 5]} /> */}
-      <planeGeometry attach="geometry" args={[1, 1, 1]} />
-      {/* <a.meshBasicMaterial attach="material" args={texture} /> */}
-      <a.meshLambertMaterial attach="material" transparent>
+      >      
+      <planeGeometry attach="geometry" args={[1, 1, 1]} />      
+      <a.meshLambertMaterial attach="material" transparent opacity={opacity}>
         <primitive attach="map" object={texture} />
       </a.meshLambertMaterial>
     </a.mesh>
