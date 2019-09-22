@@ -9,7 +9,7 @@ export default function ContactFormElement() {
         <div className="nav">
           {/* <a href="#" className="menu-activator"><i className="ion-ios-more"></i></a>*/}
           <a href="#" className="white link"><i className="ion-ios-redo-outline"></i><i className="ion-ios-redo hidden"></i></a>
-          <h6 className="text-link">RETURN TO BEGINNING</h6>
+          {/* <h6 className="text-link">RETURN TO BEGINNING</h6> */}
         </div>
         <div className="container">
           <div className="inner">
