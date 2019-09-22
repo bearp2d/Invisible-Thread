@@ -9,13 +9,15 @@ Interned at Invisible Thread (a small boutique studio that creates high end holo
 
 ## ORIGINAL WEBSITE SCREEN SHOTS
 
-![original_website1 image](./assets/mockup/1_splash.png)
-![original_website2 image](./assets/mockup/1_splash.png)
+![original_website1 image](./src/images/IT_old.png)
+![original_website2 image](./src/images/IT_contact_old.png)
 
 ## CURRENT PROGRESS CAPTURE
 
-![current_progress image](./assets/mockup/1_splash.png)
+![current_progress image](./src/images/update_gif)
 
 ## AUTHOR
 
 -   **Kaya Jepson**
+-   **Todd Aden**
+-   **Mike Larragueta**
