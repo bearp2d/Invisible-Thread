@@ -9,12 +9,12 @@ Interned at Invisible Thread (a small boutique studio that creates high end holo
 
 ## ORIGINAL WEBSITE SCREEN SHOTS
 
-![original_website1 image](./src/images/IT_old.png)
-![original_website2 image](./src/images/IT_contact_old.png)
+![original_website1 image](./src/images/IT_old.PNG)
+![original_website2 image](./src/images/IT_contact_old.PNG)
 
 ## CURRENT PROGRESS CAPTURE
 
-![current_progress image](./src/images/update_gif)
+![current_progress image](./src/images/update_gif.gif)
 
 ## AUTHOR
 
